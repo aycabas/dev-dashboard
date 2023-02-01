@@ -5,8 +5,8 @@ export async function getIssues(): Promise<githubIssuesModel[]> {
 
     const octokit = new Octokit({
         //github personal access token
-        //auth:''
-        auth: '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'
+        auth: ''
+
     })
 
     try {
@@ -34,8 +34,8 @@ export async function getIssues(): Promise<githubIssuesModel[]> {
 export async function createIssue(title: string): Promise<githubIssuesModel[]> {
     const octokit = new Octokit({
         //github personal access token
-        //auth:''
-        auth: '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'
+        auth: ''
+
     })
 
     try {
