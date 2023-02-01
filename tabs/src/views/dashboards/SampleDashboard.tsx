@@ -3,6 +3,7 @@ import { oneColumn } from "../lib/Dashboard.styles";
 import { OpenAI } from '../widgets/OpenAIWidget';
 import { GithubIssues } from '../widgets/GitHubWidget';
 import { PlannerTask } from '../widgets/PlannerTask';
+import { DevOps } from '../widgets/DevOpsWidget';
 
 export default class SampleDashboard extends Dashboard {
   protected rowHeights(): string | undefined {
@@ -18,6 +19,7 @@ export default class SampleDashboard extends Dashboard {
       <>
         <OpenAI />
         <div style={oneColumn()}>
+          <DevOps />
           <GithubIssues />
           <PlannerTask />
         </div>

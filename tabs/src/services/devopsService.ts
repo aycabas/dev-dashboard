@@ -1,29 +1,51 @@
 //will be updated Microsoft Graph Search API
 import { createMicrosoftGraphClient, TeamsFx } from "@microsoft/teamsfx";
 import { Client } from "@microsoft/microsoft-graph-client";
-import { TaskModel } from "../models/plannerTaskModel";
+import { DevOpsModel } from "../models/devOpsModel";
 import { FxContext } from "../internal/singletonContext";
 
-export async function getTasks(): Promise<TaskModel[]> {
-    let teamsfx: TeamsFx;
+export async function DevOpsSearch(prompt: string): Promise<DevOpsModel[]> {
+
     try {
+        let teamsfx: TeamsFx;
         teamsfx = FxContext.getInstance().getTeamsFx();
-        const graphClient: Client = createMicrosoftGraphClient(teamsfx, ["Tasks.ReadWrite", "Group.ReadWrite.All"]);
-        const resp = await graphClient.api(`/planner/plans/wIfl13Xg6UCD_d5irDOTWJgAHcUy/tasks`).get();
-        const tasksInfo = resp["value"];
-        let tasks: TaskModel[] = [];
-        for (const obj of tasksInfo) {
-            const tmp: TaskModel = {
-                id: obj["id"],
-                name: obj["title"],
-                priority: obj["priority"],
-                percentComplete: obj["percentComplete"]
+        const graphClient: Client = createMicrosoftGraphClient(teamsfx, ["ExternalItem.Read.All", "Files.Read.All", "Sites.Read.All", "Files.ReadWrite.All", "Sites.ReadWrite.All"]);
+
+        const searchResponse = {
+            requests:
+                [{
+                    entityTypes: ['externalItem'],
+                    contentSources: ['/external/connections/AzureDevOpsConnectionID'],
+                    query: { queryString: prompt },
+                    from: 0,
+                    size: 15,
+                    fields: [
+                        "title",
+                        "URL",
+                        "WorkItemType"
+                    ]
+                }]
+        };
+
+        const resp = await graphClient.api('/search/query').post(searchResponse);
+        const devopsValue = resp["resource"];
+        let devopsItems: DevOpsModel[] = [];
+        for (const obj of devopsValue) {
+            const tmp: DevOpsModel = {
+                properties: [
+                    {
+                        Title: obj["Title"],
+                        URL: obj["URL"],
+                        WorkItemType: obj["WorkItemType"]
+                    }
+                ]
+
             };
-            tasks.push(tmp);
-            let plannerTaskDetails = await graphClient.api('/planner/tasks/' + tmp.id + '/details').get();
+            devopsItems.push(tmp);
+
 
         }
-        return tasks;
+        return devopsItems;
     } catch (e) {
         throw e;
     }

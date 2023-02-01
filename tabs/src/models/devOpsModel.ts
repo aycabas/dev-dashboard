@@ -1,5 +1,12 @@
 export interface DevOpsModel {
-    id: string;
-    url: string;
+
+    properties: [{
+        Title?: string,
+        WorkItemType?: string,
+        URL?: string
+    }]
+
 
 }
+
+
