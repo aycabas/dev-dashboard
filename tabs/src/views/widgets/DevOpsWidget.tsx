@@ -1,21 +1,21 @@
 import React, { CSSProperties } from "react";
 
-import { Button, Checkbox, Image, Text } from "@fluentui/react-components";
+import { Button, Text } from "@fluentui/react-components";
 import {
-    Add20Filled,
-    ArrowRight16Filled,
-    Circle20Regular,
+
+    CodeTextEdit20Filled,
     MoreHorizontal32Regular,
-    Star24Regular,
+    Search12Regular,
+    Search24Filled
 } from "@fluentui/react-icons";
 
 import { TeamsFxContext } from "../../internal/context";
-import { TaskModel } from "../../models/plannerTaskModel";
+import { DevOpsModel } from "../../models/devOpsModel";
+import { DevOpsSearch } from "../../services/devopsService";
 import { callFunction } from "../../services/callFunction";
-import { addTask, getTasks } from "../../services/plannerService";
 import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
-import { footerBtnStyle, headerContentStyle, headerTextStyle } from "../lib/Widget.styles";
+import { headerContentStyle, headerTextStyle } from "../lib/Widget.styles";
 import { emptyLayout, emptyTextStyle, widgetPaddingStyle } from "../styles/Common.styles";
 import {
     addBtnStyle,
@@ -23,17 +23,18 @@ import {
     addTaskContainer,
     bodyLayout,
     existingTaskLayout,
-    inputStyle,
-} from "../styles/PlannerTask.styles";
+    inputCodeStyle,
+} from "../styles/OpenAI.styles";
+
 
 interface ITaskState {
-    tasks?: TaskModel[];
+    tasks?: DevOpsModel[];
     loading: boolean;
     inputFocused?: boolean;
     addBtnOver?: boolean;
 }
 
-export class PlannerTask extends Widget<ITaskState> {
+export class DevOps extends Widget<ITaskState> {
     inputDivRef;
     btnRef;
     inputRef;
@@ -48,7 +49,7 @@ export class PlannerTask extends Widget<ITaskState> {
 
     async getData(): Promise<ITaskState> {
         return {
-            tasks: await getTasks(),
+            // tasks: await getOpenAIResponse(),
             inputFocused: false,
             addBtnOver: false,
             loading: false,
@@ -58,17 +59,9 @@ export class PlannerTask extends Widget<ITaskState> {
     headerContent(): JSX.Element | undefined {
         return (
             <div style={headerContentStyle}>
-                <TeamsFxContext.Consumer>
-                    {({ themeString }) =>
-                        themeString === "default" ? (
-                            <Image key="icon-task-default" src={`task.svg`} />
-                        ) : (
-                            <Image key="icon-task-dark" src={`task-dark.svg`} />
-                        )
-                    }
-                </TeamsFxContext.Consumer>
+                <CodeTextEdit20Filled />
                 <Text key="text-task-title" style={headerTextStyle}>
-                    Team Planner Tasks
+                    DevOps Work Items Search
                 </Text>
                 <Button key="bt-task-more" icon={<MoreHorizontal32Regular />} appearance="transparent" />
             </div>
@@ -78,25 +71,26 @@ export class PlannerTask extends Widget<ITaskState> {
     bodyContent(): JSX.Element | undefined {
         const loading: boolean = !this.state.data || (this.state.data.loading ?? true);
         const hasTask = this.state.data?.tasks?.length !== 0;
+
         return (
             <div style={bodyLayout(hasTask)}>
                 <TeamsFxContext.Consumer>
                     {({ themeString }) => this.inputLayout(themeString)}
                 </TeamsFxContext.Consumer>
+
                 {loading ? (
                     <></>
                 ) : hasTask ? (
-                    this.state.data?.tasks?.map((item: TaskModel) => {
+                    this.state.data?.tasks?.map((item: DevOpsModel) => {
+
+
                         return (
-                            <TeamsFxContext.Consumer key={`consumer-task-${item.id}`}>
+
+                            <TeamsFxContext.Consumer key={`consumer-task-${item.properties[0].Title}`}>
                                 {({ themeString }) => (
-                                    <div key={`div-task-${item.id}`} style={existingTaskLayout(themeString)}>
-                                        <Checkbox key={`cb-task-${item.id}`} shape="circular" label={item.name} />
-                                        <Button
-                                            key={`bt-task-${item.id}`}
-                                            icon={<Star24Regular />}
-                                            appearance="transparent"
-                                        />
+
+                                    <div key={`div-task-${item.properties[0].Title}`} style={existingTaskLayout(themeString)}>
+                                        {item.properties[0].Title}
                                     </div>
                                 )}
                             </TeamsFxContext.Consumer>
@@ -106,7 +100,7 @@ export class PlannerTask extends Widget<ITaskState> {
                     <div style={emptyLayout}>
                         <EmptyThemeImg key="img-empty" />
                         <Text key="text-empty" weight="semibold" style={emptyTextStyle}>
-                            Once you have a task, you'll find it here
+                            Open AI Code Helper will answer your questions here
                         </Text>
                     </div>
                 )}
@@ -114,29 +108,7 @@ export class PlannerTask extends Widget<ITaskState> {
         );
     }
 
-    footerContent(): JSX.Element | undefined {
-        if (!this.state.data?.loading && this.state.data?.tasks?.length !== 0) {
-            return (
-                <Button
-                    appearance="transparent"
-                    icon={<ArrowRight16Filled />}
-                    iconPosition="after"
-                    size="small"
-                    style={footerBtnStyle}
-                    onClick={() =>
-                        window.open(
-                            "https://tasks.office.com/m365advocates.onmicrosoft.com/en-US/Home/Planner/#/plantaskboard?groupId=c168296c-f4cf-44a2-9e27-e9ef602e8b22&planId=wIfl13Xg6UCD_d5irDOTWJgAHcUy",
-                            "_blank"
-                        )
-                    } // navigate to detailed page
-                >
-                    View all
-                </Button>
-            );
-        } else {
-            return undefined;
-        }
-    }
+
 
     private inputLayout(themeString: string): JSX.Element | undefined {
         return (
@@ -145,30 +117,36 @@ export class PlannerTask extends Widget<ITaskState> {
                 style={addTaskContainer(themeString, this.state.data?.inputFocused)}
             >
                 {this.state.data?.inputFocused ? (
-                    <Circle20Regular style={addBtnStyle} />
+                    <Search12Regular style={addBtnStyle} />
                 ) : (
-                    <Add20Filled style={addBtnStyle} />
+                    <Search24Filled style={addBtnStyle} />
                 )}
 
                 <input
                     ref={this.inputRef}
                     type="text"
-                    style={inputStyle(this.state.data?.inputFocused)}
+                    style={inputCodeStyle(this.state.data?.inputFocused)}
                     onFocus={() => this.inputFocusedState()}
-                    placeholder="Add a task"
+                    placeholder="Search DevOps Work Items"
                 />
+
                 {this.state.data?.inputFocused && (
                     <button
                         style={addTaskBtnStyle(this.state.data?.addBtnOver)}
                         onClick={() => {
+
                             this.onAddButtonClick();
+
                         }}
                         onMouseEnter={() => this.mouseEnterState()}
                         onMouseLeave={() => this.mouseLeaveState()}
                     >
-                        Add
+                        Ask
                     </button>
+
                 )}
+
+
             </div>
         );
     }
@@ -201,7 +179,7 @@ export class PlannerTask extends Widget<ITaskState> {
 
     private onAddButtonClick = async () => {
         if (this.inputRef.current && this.inputRef.current.value.length > 0) {
-            const tasks: TaskModel[] = await addTask(this.inputRef.current.value);
+            const tasks: DevOpsModel[] = await DevOpsSearch(this.inputRef.current.value);
             this.setState({
                 data: {
                     tasks: tasks,

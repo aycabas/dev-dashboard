@@ -3,8 +3,9 @@ import { Configuration, OpenAIApi } from "openai";
 
 export async function askOpenAI(prompt: string): Promise<openAIModel[]> {
     const configuration = new Configuration({
-        //Insert Open AI API Key,
-        apiKey: "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",
+        //Insert Open AI API Key
+        apiKey: "",
+
     });
     const openai = new OpenAIApi(configuration);
 
