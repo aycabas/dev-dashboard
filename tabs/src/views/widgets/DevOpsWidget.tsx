@@ -1,153 +1,171 @@
-import React, { CSSProperties } from "react";
+import * as d3 from "d3-format";
 
-import { Button, Text } from "@fluentui/react-components";
+import { AreaChart, IChartProps } from "@fluentui/react-charting";
+import { Avatar, Button, Text, ToggleButton, tokens } from "@fluentui/react-components";
 import {
-
-    CodeTextEdit20Filled,
+    ArrowMaximize20Regular,
+    ArrowRight16Filled,
+    ChevronRight20Regular,
+    MoreHorizontal16Filled,
     MoreHorizontal32Regular,
-    Search12Regular,
-    Search24Filled
+    Rocket20Regular,
+    Search20Regular,
+    Settings20Regular,
+    Trophy20Regular,
 } from "@fluentui/react-icons";
 
-import { TeamsFxContext } from "../../internal/context";
+import { DayRange, DayRangeModel } from "../../models/dayRangeModel";
 import { DevOpsModel } from "../../models/devOpsModel";
-import { DevOpsSearch } from "../../services/devopsService";
-import { callFunction } from "../../services/callFunction";
-import { EmptyThemeImg } from "../components/EmptyThemeImg";
+import { DevOpsWorkItems } from "../../services/devopsService";
+import ProgressBar from "../components/Progress";
 import { Widget } from "../lib/Widget";
-import { headerContentStyle, headerTextStyle } from "../lib/Widget.styles";
-import { emptyLayout, emptyTextStyle, widgetPaddingStyle } from "../styles/Common.styles";
+import { footerBtnStyle, headerStyleWithoutIcon } from "../lib/Widget.styles";
 import {
-    addBtnStyle,
-    addTaskBtnStyle,
-    addTaskContainer,
+    actionLayout,
+    areaChartLayout,
+    areaChartStyle,
+    avatarStyle,
+    backlogLayout,
+    backlogStyle,
     bodyLayout,
-    existingTaskLayout,
-    inputCodeStyle,
-} from "../styles/OpenAI.styles";
+    divider,
+    legendBoldStyle,
+    legendDividerStyle,
+    legendItemLayout,
+    legendLayout,
+    legendNormalStyle,
+    minWidthStyle,
+    stateLayout,
+    stateStyle,
+    tableColumnStyle,
+    tableContentLayout,
+    tableHeaderStyle,
+    tableLayout,
+    timeSpanLayout,
+    timeSpanStyle,
+    titleStyle,
+} from "../styles/Chart.style";
+import { CSSProperties } from "react";
+import { widgetPaddingStyle } from "../styles/Common.styles";
 
+interface IChartWidgetState {
+    dayRange: DayRange;
 
-interface ITaskState {
-    tasks?: DevOpsModel[];
-    loading: boolean;
-    inputFocused?: boolean;
-    addBtnOver?: boolean;
+    devOpsData?: DevOpsModel[];
 }
 
-export class DevOps extends Widget<ITaskState> {
-    inputDivRef;
-    btnRef;
-    inputRef;
+export class DevOps extends Widget<IChartWidgetState> {
+    async getData(): Promise<IChartWidgetState> {
 
-    constructor(props: any) {
-        super(props);
-        this.inputRef = React.createRef<HTMLInputElement>();
-        this.inputDivRef = React.createRef<HTMLDivElement>();
-        this.btnRef = React.createRef<HTMLButtonElement>();
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-    }
 
-    async getData(): Promise<ITaskState> {
+
         return {
-            // tasks: await getOpenAIResponse(),
-            inputFocused: false,
-            addBtnOver: false,
-            loading: false,
+            dayRange: DayRange.Seven,
+            devOpsData: await DevOpsWorkItems(),
         };
     }
 
     headerContent(): JSX.Element | undefined {
         return (
-            <div style={headerContentStyle}>
-                <CodeTextEdit20Filled />
-                <Text key="text-task-title" style={headerTextStyle}>
-                    DevOps Work Items Search
+            <div key="div-chart-header" style={headerStyleWithoutIcon}>
+                <Text key="text-chart-title" style={areaChartStyle}>
+                    Area chart
                 </Text>
-                <Button key="bt-task-more" icon={<MoreHorizontal32Regular />} appearance="transparent" />
+                <div key="div-chart-actions" style={actionLayout}>
+                    <Button key="bt-chart-search" icon={<Search20Regular />} appearance="transparent" />
+                    <Button key="bt-chart-max" icon={<ArrowMaximize20Regular />} appearance="transparent" />
+                    <Button key="bt-chart-setting" icon={<Settings20Regular />} appearance="transparent" />
+                    <Button key="bt-chart-more" icon={<MoreHorizontal32Regular />} appearance="transparent" />
+                </div>
             </div>
         );
     }
 
     bodyContent(): JSX.Element | undefined {
-        const loading: boolean = !this.state.data || (this.state.data.loading ?? true);
-        const hasTask = this.state.data?.tasks?.length !== 0;
-
         return (
-            <div style={bodyLayout(hasTask)}>
-                <TeamsFxContext.Consumer>
-                    {({ themeString }) => this.inputLayout(themeString)}
-                </TeamsFxContext.Consumer>
-
-                {loading ? (
-                    <></>
-                ) : hasTask ? (
-                    this.state.data?.tasks?.map((item: DevOpsModel) => {
+            <div key="div-chart-body" style={bodyLayout}>
 
 
-                        return (
-
-                            <TeamsFxContext.Consumer key={`consumer-task-${item.properties[0].Title}`}>
-                                {({ themeString }) => (
-
-                                    <div key={`div-task-${item.properties[0].Title}`} style={existingTaskLayout(themeString)}>
-                                        {item.properties[0].Title}
-                                    </div>
-                                )}
-                            </TeamsFxContext.Consumer>
-                        );
-                    })
-                ) : (
-                    <div style={emptyLayout}>
-                        <EmptyThemeImg key="img-empty" />
-                        <Text key="text-empty" weight="semibold" style={emptyTextStyle}>
-                            Open AI Code Helper will answer your questions here
+                <div key="div-table-layout" style={tableLayout}>
+                    <div key="div-back-log" style={backlogLayout}>
+                        <Text key="text-back-log" style={backlogStyle}>
+                            Features backlog (57)
                         </Text>
+                        <Button
+                            key="bt-back-log-more"
+                            icon={<MoreHorizontal16Filled />}
+                            appearance="transparent"
+                        />
                     </div>
-                )}
+
+                    <div key="div-table-content" style={tableContentLayout}>
+                        <div key="div-table-column" style={tableColumnStyle}>
+                            <Text
+                                key="text-table-header-title"
+                                style={{ ...minWidthStyle(8), ...tableHeaderStyle }}
+                            >
+                                Title
+                            </Text>
+                            <Text
+                                key="text-table-header-assigned"
+                                style={{ ...minWidthStyle(18), ...tableHeaderStyle }}
+                            >
+                                Created by
+                            </Text>
+
+
+                        </div>
+                        {this.state.data?.devOpsData?.map((item: DevOpsModel, index) => {
+                            return (
+                                <>
+                                    {index !== 0 && <div key={`table-divider-${item.id}`} style={divider} />}
+                                    <div key={`div-table-column-${item.id}`} style={tableColumnStyle}>
+                                        <div key={`div-table-title-${item.id}`} style={titleStyle}>
+                                            <ChevronRight20Regular key={`icon-chevron-${item.id}`} />
+                                            {index !== 3 ? (
+                                                <Rocket20Regular key={`icon-rocket-${item.id}`} />
+                                            ) : (
+                                                <Trophy20Regular key={`icon-trophy-${item.id}`} />
+                                            )}
+                                            <Text key={`text-title-${item.id}`} wrap={false}>
+                                                {item.fields.workItemType}: {item.fields.title}
+                                            </Text>
+                                        </div>
+
+                                        <div key={`div-table-avatar-${item.id}`} style={avatarStyle}>
+                                            <Avatar
+                                                key={`avatar-assigned-${item.id}`}
+                                                name={item.fields.createdBy?.displayName}
+                                                image={{ src: `${item.fields.createdBy?.links?.avatar}` }}
+                                                size={16}
+                                            />
+                                            <Text key={`text-assigned-${item.id}`}>{item.fields.createdBy?.displayName}</Text>
+                                        </div>
+
+
+                                    </div>
+                                </>
+                            );
+                        })}
+                    </div>
+                </div>
             </div>
         );
     }
 
-
-
-    private inputLayout(themeString: string): JSX.Element | undefined {
+    footerContent(): JSX.Element | undefined {
         return (
-            <div
-                ref={this.inputDivRef}
-                style={addTaskContainer(themeString, this.state.data?.inputFocused)}
+            <Button
+                key="bt-chart-footer"
+                appearance="transparent"
+                icon={<ArrowRight16Filled />}
+                iconPosition="after"
+                size="small"
+                style={footerBtnStyle}
+                onClick={() => { }} // navigate to detailed page
             >
-                {this.state.data?.inputFocused ? (
-                    <Search12Regular style={addBtnStyle} />
-                ) : (
-                    <Search24Filled style={addBtnStyle} />
-                )}
-
-                <input
-                    ref={this.inputRef}
-                    type="text"
-                    style={inputCodeStyle(this.state.data?.inputFocused)}
-                    onFocus={() => this.inputFocusedState()}
-                    placeholder="Search DevOps Work Items"
-                />
-
-                {this.state.data?.inputFocused && (
-                    <button
-                        style={addTaskBtnStyle(this.state.data?.addBtnOver)}
-                        onClick={() => {
-
-                            this.onAddButtonClick();
-
-                        }}
-                        onMouseEnter={() => this.mouseEnterState()}
-                        onMouseLeave={() => this.mouseLeaveState()}
-                    >
-                        Ask
-                    </button>
-
-                )}
-
-
-            </div>
+                View query
+            </Button>
         );
     }
 
@@ -155,74 +173,4 @@ export class DevOps extends Widget<ITaskState> {
         return widgetPaddingStyle;
     }
 
-    async componentDidMount() {
-        super.componentDidMount();
-        document.addEventListener("mousedown", this.handleClickOutside);
-    }
-
-    componentWillUnmount(): void {
-        document.removeEventListener("mousedown", this.handleClickOutside);
-    }
-
-    private handleClickOutside(event: any) {
-        if (!this.inputDivRef.current?.contains(event.target)) {
-            this.setState({
-                data: {
-                    tasks: this.state.data?.tasks,
-                    inputFocused: false,
-                    addBtnOver: this.state.data?.addBtnOver,
-                    loading: false,
-                },
-            });
-        }
-    }
-
-    private onAddButtonClick = async () => {
-        if (this.inputRef.current && this.inputRef.current.value.length > 0) {
-            const tasks: DevOpsModel[] = await DevOpsSearch(this.inputRef.current.value);
-            this.setState({
-                data: {
-                    tasks: tasks,
-                    inputFocused: false,
-                    addBtnOver: false,
-                    loading: false,
-                },
-            });
-            this.inputRef.current.value = "";
-            callFunction(this.inputRef.current.value);
-        }
-    };
-
-    private inputFocusedState = () => {
-        this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: true,
-                addBtnOver: this.state.data?.addBtnOver,
-                loading: false,
-            },
-        });
-    };
-
-    private mouseEnterState = () => {
-        this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: this.state.data?.inputFocused,
-                addBtnOver: true,
-                loading: false,
-            },
-        });
-    };
-
-    private mouseLeaveState = () => {
-        this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: this.state.data?.inputFocused,
-                addBtnOver: false,
-                loading: false,
-            },
-        });
-    };
 }
