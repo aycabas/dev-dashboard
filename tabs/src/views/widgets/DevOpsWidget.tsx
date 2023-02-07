@@ -1,21 +1,19 @@
 import React, { CSSProperties } from "react";
 
-import { Button, Text } from "@fluentui/react-components";
+import { Button, Spinner, Text } from "@fluentui/react-components";
 import {
-
     CodeTextEdit20Filled,
     MoreHorizontal32Regular,
     Search12Regular,
-    Search24Filled
+    Search24Filled,
 } from "@fluentui/react-icons";
 
 import { TeamsFxContext } from "../../internal/context";
 import { DevOpsModel } from "../../models/devOpsModel";
 import { DevOpsSearch } from "../../services/devopsService";
-import { callFunction } from "../../services/callFunction";
 import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
-import { headerContentStyle, headerTextStyle } from "../lib/Widget.styles";
+import { widgetStyle } from "../lib/Widget.styles";
 import { emptyLayout, emptyTextStyle, widgetPaddingStyle } from "../styles/Common.styles";
 import {
     addBtnStyle,
@@ -26,10 +24,8 @@ import {
     inputCodeStyle,
 } from "../styles/OpenAI.styles";
 
-
 interface ITaskState {
     tasks?: DevOpsModel[];
-    loading: boolean;
     inputFocused?: boolean;
     addBtnOver?: boolean;
 }
@@ -47,49 +43,48 @@ export class DevOps extends Widget<ITaskState> {
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
 
-    async getData(): Promise<ITaskState> {
+    protected async getData(): Promise<ITaskState> {
         return {
-            // tasks: await getOpenAIResponse(),
             inputFocused: false,
             addBtnOver: false,
-            loading: false,
         };
     }
 
-    headerContent(): JSX.Element | undefined {
+    protected headerContent(): JSX.Element | undefined {
         return (
-            <div style={headerContentStyle}>
+            <div className={widgetStyle.headerContent}>
                 <CodeTextEdit20Filled />
-                <Text key="text-task-title" style={headerTextStyle}>
+                <Text key="text-task-title" className={widgetStyle.headerText}>
                     DevOps Work Items Search
                 </Text>
-                <Button key="bt-task-more" icon={<MoreHorizontal32Regular />} appearance="transparent" />
+                <Button
+                    key="bt-task-more"
+                    icon={<MoreHorizontal32Regular />}
+                    appearance="transparent"
+                />
             </div>
         );
     }
 
-    bodyContent(): JSX.Element | undefined {
-        const loading: boolean = !this.state.data || (this.state.data.loading ?? true);
-        const hasTask = this.state.data?.tasks?.length !== 0;
-
+    protected bodyContent(): JSX.Element | undefined {
+        const hasTask = this.state.tasks?.length !== 0;
         return (
             <div style={bodyLayout(hasTask)}>
                 <TeamsFxContext.Consumer>
                     {({ themeString }) => this.inputLayout(themeString)}
                 </TeamsFxContext.Consumer>
 
-                {loading ? (
-                    <></>
-                ) : hasTask ? (
-                    this.state.data?.tasks?.map((item: DevOpsModel) => {
-
-
+                {hasTask ? (
+                    this.state.tasks?.map((item: DevOpsModel) => {
                         return (
-
-                            <TeamsFxContext.Consumer key={`consumer-task-${item.properties[0].Title}`}>
+                            <TeamsFxContext.Consumer
+                                key={`consumer-task-${item.properties[0].Title}`}
+                            >
                                 {({ themeString }) => (
-
-                                    <div key={`div-task-${item.properties[0].Title}`} style={existingTaskLayout(themeString)}>
+                                    <div
+                                        key={`div-task-${item.properties[0].Title}`}
+                                        style={existingTaskLayout(themeString)}
+                                    >
                                         {item.properties[0].Title}
                                     </div>
                                 )}
@@ -108,15 +103,21 @@ export class DevOps extends Widget<ITaskState> {
         );
     }
 
-
+    protected loadingContent(): JSX.Element | undefined {
+        return (
+            <div style={{ display: "grid" }}>
+                <Spinner label="Loading..." labelPosition="below" />
+            </div>
+        );
+    }
 
     private inputLayout(themeString: string): JSX.Element | undefined {
         return (
             <div
                 ref={this.inputDivRef}
-                style={addTaskContainer(themeString, this.state.data?.inputFocused)}
+                style={addTaskContainer(themeString, this.state.inputFocused)}
             >
-                {this.state.data?.inputFocused ? (
+                {this.state.inputFocused ? (
                     <Search12Regular style={addBtnStyle} />
                 ) : (
                     <Search24Filled style={addBtnStyle} />
@@ -125,28 +126,23 @@ export class DevOps extends Widget<ITaskState> {
                 <input
                     ref={this.inputRef}
                     type="text"
-                    style={inputCodeStyle(this.state.data?.inputFocused)}
+                    style={inputCodeStyle(this.state.inputFocused)}
                     onFocus={() => this.inputFocusedState()}
                     placeholder="Search DevOps Work Items"
                 />
 
-                {this.state.data?.inputFocused && (
+                {this.state.inputFocused && (
                     <button
-                        style={addTaskBtnStyle(this.state.data?.addBtnOver)}
+                        style={addTaskBtnStyle(this.state.addBtnOver)}
                         onClick={() => {
-
                             this.onAddButtonClick();
-
                         }}
                         onMouseEnter={() => this.mouseEnterState()}
                         onMouseLeave={() => this.mouseLeaveState()}
                     >
                         Ask
                     </button>
-
                 )}
-
-
             </div>
         );
     }
@@ -167,12 +163,10 @@ export class DevOps extends Widget<ITaskState> {
     private handleClickOutside(event: any) {
         if (!this.inputDivRef.current?.contains(event.target)) {
             this.setState({
-                data: {
-                    tasks: this.state.data?.tasks,
-                    inputFocused: false,
-                    addBtnOver: this.state.data?.addBtnOver,
-                    loading: false,
-                },
+                tasks: this.state.tasks,
+                inputFocused: false,
+                addBtnOver: this.state.addBtnOver,
+                loading: false,
             });
         }
     }
@@ -181,48 +175,39 @@ export class DevOps extends Widget<ITaskState> {
         if (this.inputRef.current && this.inputRef.current.value.length > 0) {
             const tasks: DevOpsModel[] = await DevOpsSearch(this.inputRef.current.value);
             this.setState({
-                data: {
-                    tasks: tasks,
-                    inputFocused: false,
-                    addBtnOver: false,
-                    loading: false,
-                },
+                tasks: tasks,
+                inputFocused: false,
+                addBtnOver: false,
+                loading: false,
             });
             this.inputRef.current.value = "";
-            callFunction(this.inputRef.current.value);
         }
     };
 
     private inputFocusedState = () => {
         this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: true,
-                addBtnOver: this.state.data?.addBtnOver,
-                loading: false,
-            },
+            tasks: this.state.tasks,
+            inputFocused: true,
+            addBtnOver: this.state.addBtnOver,
+            loading: false,
         });
     };
 
     private mouseEnterState = () => {
         this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: this.state.data?.inputFocused,
-                addBtnOver: true,
-                loading: false,
-            },
+            tasks: this.state.tasks,
+            inputFocused: this.state.inputFocused,
+            addBtnOver: true,
+            loading: false,
         });
     };
 
     private mouseLeaveState = () => {
         this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: this.state.data?.inputFocused,
-                addBtnOver: false,
-                loading: false,
-            },
+            tasks: this.state.tasks,
+            inputFocused: this.state.inputFocused,
+            addBtnOver: false,
+            loading: false,
         });
     };
 }

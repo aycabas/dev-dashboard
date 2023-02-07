@@ -1,16 +1,17 @@
-import React, { Component } from "react";
+import React, { Component, CSSProperties } from "react";
 
 import { dashboardStyles } from "./Dashboard.styles";
 
 interface IDashboardState {
   isMobile?: boolean;
+  showLogin?: boolean;
   observer?: ResizeObserver;
 }
 
 /**
  * The dashboard class which is the base class for all dashboard components.
  */
-export class Dashboard extends Component<{}, IDashboardState> {
+export class Dashboard extends Component<any, IDashboardState> {
   private ref: React.RefObject<HTMLDivElement>;
 
   /**
@@ -22,6 +23,7 @@ export class Dashboard extends Component<{}, IDashboardState> {
     super(props);
     this.state = {
       isMobile: undefined,
+      showLogin: undefined,
       observer: undefined,
     };
     this.ref = React.createRef<HTMLDivElement>();
@@ -32,14 +34,13 @@ export class Dashboard extends Component<{}, IDashboardState> {
    * It's a good place to fetch data from server.
    * For more information about react lifecycle, please refer to https://reactjs.org/docs/react-component.html#componentdidmount
    */
-  componentDidMount(): void {
+  async componentDidMount() {
     // Observe the dashboard div for resize events
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
         if (entry.target === this.ref.current) {
           const { width } = entry.contentRect;
           this.setState({ isMobile: width < 600 });
-          console.log(this.state.isMobile + " " + width);
         }
       }
     });
@@ -62,18 +63,15 @@ export class Dashboard extends Component<{}, IDashboardState> {
    */
   render() {
     return (
-      <>
-        <div
-          ref={this.ref}
-          style={dashboardStyles(
-            this.state.isMobile,
-            this.rowHeights(),
-            this.columnWidths()
-          )}
-        >
-          {this.dashboardLayout()}
-        </div>
-      </>
+      <div
+        ref={this.ref}
+        style={{
+          ...dashboardStyles(this.state.isMobile, this.rowHeights(), this.columnWidths()),
+          ...this.customiseDashboardStyle(),
+        }}
+      >
+        {this.dashboardLayout()}
+      </div>
     );
   }
 
@@ -99,6 +97,10 @@ export class Dashboard extends Component<{}, IDashboardState> {
    * Implement this method to define the dashboard layout.
    */
   protected dashboardLayout(): JSX.Element | undefined {
+    return undefined;
+  }
+
+  protected customiseDashboardStyle(): CSSProperties | undefined {
     return undefined;
   }
 }

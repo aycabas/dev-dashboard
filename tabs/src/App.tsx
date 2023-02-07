@@ -38,7 +38,7 @@ export default function App() {
         }
         style={{
           height: "100vh",
-          background: tokens.colorNeutralBackground3,
+          background: "var(--Background)",
         }}
       >
         <Router>

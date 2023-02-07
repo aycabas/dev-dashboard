@@ -1,14 +1,19 @@
-import { createMicrosoftGraphClient, TeamsFx } from "@microsoft/teamsfx";
+import { createMicrosoftGraphClientWithCredential, TeamsUserCredential } from "@microsoft/teamsfx";
 import { Client } from "@microsoft/microsoft-graph-client";
 import { TaskModel } from "../models/plannerTaskModel";
-import { FxContext } from "../internal/singletonContext";
+import { TeamsUserCredentialContext } from "../internal/singletonContext";
 
 export async function getTasks(): Promise<TaskModel[]> {
-    let teamsfx: TeamsFx;
+    let credential: TeamsUserCredential;
     try {
-        teamsfx = FxContext.getInstance().getTeamsFx();
-        const graphClient: Client = createMicrosoftGraphClient(teamsfx, ["Tasks.ReadWrite", "Group.ReadWrite.All"]);
-        const resp = await graphClient.api(`/planner/plans/wIfl13Xg6UCD_d5irDOTWJgAHcUy/tasks`).get();
+        credential = TeamsUserCredentialContext.getInstance().getCredential();
+        const graphClient: Client = createMicrosoftGraphClientWithCredential(credential, [
+            "Tasks.ReadWrite",
+            "Group.ReadWrite.All",
+        ]);
+        const resp = await graphClient
+            .api(`/planner/plans/h4vAIIpyo0KPidc_WGpLAWUAEagS/tasks?$top=4`)
+            .get();
         const tasksInfo = resp["value"];
         let tasks: TaskModel[] = [];
         for (const obj of tasksInfo) {
@@ -16,11 +21,12 @@ export async function getTasks(): Promise<TaskModel[]> {
                 id: obj["id"],
                 name: obj["title"],
                 priority: obj["priority"],
-                percentComplete: obj["percentComplete"]
+                percentComplete: obj["percentComplete"],
             };
             tasks.push(tmp);
-            let plannerTaskDetails = await graphClient.api('/planner/tasks/' + tmp.id + '/details').get();
-
+            let plannerTaskDetails = await graphClient
+                .api("/planner/tasks/" + tmp.id + "/details")
+                .get();
         }
         return tasks;
     } catch (e) {
@@ -30,17 +36,22 @@ export async function getTasks(): Promise<TaskModel[]> {
 
 export async function addTask(title: string): Promise<TaskModel[]> {
     try {
-        let teamsfx: TeamsFx;
-        teamsfx = FxContext.getInstance().getTeamsFx();
+        let credential: TeamsUserCredential;
+        credential = TeamsUserCredentialContext.getInstance().getCredential();
 
-        const graphClient: Client = createMicrosoftGraphClient(teamsfx, ["Tasks.ReadWrite", "Group.ReadWrite.All"]);
+        const graphClient: Client = createMicrosoftGraphClientWithCredential(credential, [
+            "Tasks.ReadWrite",
+            "Group.ReadWrite.All",
+        ]);
         const plannerTask = {
-            planId: 'wIfl13Xg6UCD_d5irDOTWJgAHcUy',
-            bucketId: 'JH1nQBAMqUSDWcSZapZ745gALtiv',
-            title: title
+            planId: "h4vAIIpyo0KPidc_WGpLAWUAEagS",
+            bucketId: "hGZpkzHbhU-_6u4kyd4RLGUANN-u",
+            title: title,
         };
         await graphClient.api("/planner/tasks").post(plannerTask);
-        const tasks = await graphClient.api("/planner/plans/wIfl13Xg6UCD_d5irDOTWJgAHcUy/tasks").get();
+        const tasks = await graphClient
+            .api("/planner/plans/h4vAIIpyo0KPidc_WGpLAWUAEagS/tasks?$top=4")
+            .get();
         const tasksInfo = tasks["value"];
         let taskResult: TaskModel[] = [];
         for (const obj of tasksInfo) {
@@ -48,7 +59,7 @@ export async function addTask(title: string): Promise<TaskModel[]> {
                 id: obj["id"],
                 name: obj["title"],
                 priority: obj["priority"],
-                percentComplete: obj["percentComplete"]
+                percentComplete: obj["percentComplete"],
             };
             taskResult.push(tmp);
         }

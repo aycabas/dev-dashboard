@@ -1,18 +1,22 @@
-import { Component, CSSProperties } from 'react';
+import { mergeStyles } from "@fluentui/react";
+import { Component, CSSProperties } from "react";
 
-import { headerStyles, widgetStyles } from './Widget.styles';
+import { widgetStyle } from "./Widget.styles";
+
+interface WidgetState {
+  loading?: boolean;
+}
 
 /**
  * Defined a widget, it's also a react component.
  * For more information about react component, please refer to https://reactjs.org/docs/react-component.html
  * T is the model type of the widget.
  */
-export abstract class Widget<T> extends Component<any, { data?: T | void }> {
+export abstract class Widget<T> extends Component<{}, T & WidgetState> {
   constructor(props: any) {
     super(props);
-    this.state = {
-      data: undefined,
-    };
+    type L = T & WidgetState;
+    this.state = {} as L;
   }
 
   /**
@@ -21,7 +25,7 @@ export abstract class Widget<T> extends Component<any, { data?: T | void }> {
    * For more information about react lifecycle, please refer to https://reactjs.org/docs/react-component.html#componentdidmount
    */
   async componentDidMount() {
-    this.setState({ data: await this.getData() });
+    this.setState({ ...(await this.getData()), loading: false });
   }
 
   /**
@@ -29,10 +33,16 @@ export abstract class Widget<T> extends Component<any, { data?: T | void }> {
    */
   render() {
     return (
-      <div style={{ ...widgetStyles, ...this.customiseWidgetStyle() }}>
-        {this.headerContent() && <div style={headerStyles}>{this.headerContent()}</div>}
-        {this.bodyContent()}
-        {this.footerContent()}
+      <div className={mergeStyles(widgetStyle.root, this.genClassName())} style={this.genStyle()}>
+        {this.headerContent() && <div className={widgetStyle.header}>{this.headerContent()}</div>}
+        {this.state.loading !== false && this.loadingContent() !== undefined ? (
+          this.loadingContent()
+        ) : (
+          <>
+            {this.bodyContent() !== undefined && this.bodyContent()}
+            {this.footerContent() !== undefined && this.footerContent()}
+          </>
+        )}
       </div>
     );
   }
@@ -42,7 +52,7 @@ export abstract class Widget<T> extends Component<any, { data?: T | void }> {
    * @returns data for the widget
    */
   protected async getData(): Promise<T> {
-    return new Promise<T>(() => { });
+    return {} as T;
   }
 
   /**
@@ -70,10 +80,35 @@ export abstract class Widget<T> extends Component<any, { data?: T | void }> {
   }
 
   /**
+   * Override this method to customize what the widget will look like when it is loading.
+   */
+  protected loadingContent(): JSX.Element | undefined {
+    return undefined;
+  }
+
+  /**
    * Override this method to customize the widget style.
    * @returns custom style for the widget
    */
-  protected customiseWidgetStyle(): CSSProperties | undefined {
-    return undefined;
+  protected stylingWidget(): CSSProperties | string {
+    return {};
+  }
+
+  /**
+   * Construct CSSProperties object for styling the widget.
+   * @returns CSSProperties object
+   */
+  private genStyle(): CSSProperties {
+    return typeof this.stylingWidget() === "string"
+      ? ({} as CSSProperties)
+      : (this.stylingWidget() as CSSProperties);
+  }
+
+  /**
+   * Construct className string for styling the widget.
+   * @returns className for styling the widget
+   */
+  private genClassName(): string {
+    return typeof this.stylingWidget() === "string" ? (this.stylingWidget() as string) : "";
   }
 }
