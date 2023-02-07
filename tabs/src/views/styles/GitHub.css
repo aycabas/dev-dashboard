@@ -1,6 +1,6 @@
-.header-icon {
-    width: 22px;
-    height: 22px;
+.github-header-icon {
+    width: 22px !important;
+    height: 22px !important;
 }
 
 .border-style {
@@ -24,10 +24,10 @@
     min-width: 18rem;
 }
 
-.add-btn {
+.issue-add-icon {
     color: var(--colorBrandForeground1);
     margin-left: 0.35rem;
-    padding: 0;
+    padding: 0 !important;
 }
 
 .issue-input {
@@ -47,6 +47,7 @@ input::placeholder {
 .issue-input-focused {
     grid-template-columns: 1fr max-content !important;
     background-color: var(--colorNeutralBackground6);
+    padding-left: 1.225rem !important;
 }
 
 .issue-input-unfocused {
@@ -54,7 +55,7 @@ input::placeholder {
     background-color: var(--colorNeutralBackground3);
 }
 
-.add-issue-container {
+.add-issue-layout {
     display: grid;
     grid-template-columns: max-content 1fr max-content;
     gap: 1rem;
@@ -85,14 +86,14 @@ input::placeholder {
     background-color: var(--colorNeutralStrokeOnBrand2);
 }
 
-.existing-issue-layout {
+.issue-item-layout {
     display: grid;
     grid-template-columns: 1fr max-content;
     gap: 1rem;
     align-items: center;
     background-color: var(--colorNeutralBackground3);
     border-radius: 4px;
-    padding-left: 0.875rem;
+    padding-left: 1.225rem;
     padding-right: 0.7rem;
 }
 
@@ -103,6 +104,7 @@ input::placeholder {
 .bug-icon {
     width: 12px !important;
     height: 16px !important;
+    margin-top: 3px;
 }
 
 .issue-content-layout {

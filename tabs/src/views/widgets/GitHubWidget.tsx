@@ -52,7 +52,7 @@ export class GithubIssues extends Widget<IIssueState> {
     headerContent(): JSX.Element | undefined {
         return (
             <div className={widgetStyle.headerContent}>
-                <GitHubLogoIcon key={`icon-github-issues`} className="header-icon" />
+                <GitHubLogoIcon key={`icon-github-issues`} className="github-header-icon" />
                 <Text key="text-issue-title" className={widgetStyle.headerText}>
                     GitHub Repository Issues
                 </Text>
@@ -80,21 +80,18 @@ export class GithubIssues extends Widget<IIssueState> {
                                     <div
                                         key={`div-issue-${item.title}`}
                                         className={mergeStyles(
-                                            "existing-issue-layout",
+                                            "issue-item-layout",
                                             themeString === "contrast" ? "border-style" : ""
                                         )}
                                     >
                                         <div className="issue-item-left-layout">
                                             <div className="issue-content-layout">
-                                                <div>
-                                                    <LadybugSolidIcon className="bug-icon" />
-                                                </div>
+                                                <LadybugSolidIcon className="bug-icon" />
                                                 <Text
                                                     key={`cb-issue-${item.title}`}
                                                     className="issue-title"
-                                                    onClick={() => window.open(item.url, "_blank")}
                                                 >
-                                                    [{item.state}]{item.title}
+                                                    [{item.state}] {item.title}
                                                 </Text>
                                             </div>
                                             {item.body && (
@@ -106,7 +103,7 @@ export class GithubIssues extends Widget<IIssueState> {
                                                 </Text>
                                             )}
                                         </div>
-                                        
+
                                         <Button
                                             key={`bt-issue-${item.title}`}
                                             className="issue-share-btn"
@@ -160,12 +157,12 @@ export class GithubIssues extends Widget<IIssueState> {
             <div
                 ref={this.inputDivRef}
                 className={mergeStyles(
-                    "add-issue-container",
+                    "add-issue-layout",
                     this.state.inputFocused ? "issue-input-focused" : "issue-input-unfocused",
                     themeString === "contrast" ? "border-style" : ""
                 )}
             >
-                {!this.state.inputFocused && <Add20Filled className="add-btn" />}
+                {!this.state.inputFocused && <Add20Filled className="issue-add-icon" />}
 
                 <input
                     ref={this.inputRef}
