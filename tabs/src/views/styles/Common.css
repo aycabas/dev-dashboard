@@ -1,0 +1,10 @@
+.empty-layout {
+    display: grid;
+    height: 100%;
+}
+
+.empty-img {
+    height: 155px;
+    justify-self: center;
+    align-self: center;
+}

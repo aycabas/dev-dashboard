@@ -1,37 +1,29 @@
-import React, { CSSProperties } from "react";
+import "../styles/OpenAI.css";
+import "../styles/Common.css";
 
-import { Button, Text } from "@fluentui/react-components";
+import React from "react";
+
+import { Button, Image, Text } from "@fluentui/react-components";
 import {
     CodeTextEdit20Filled,
+    DismissCircle24Regular,
     MoreHorizontal32Regular,
-    Search12Regular,
-    Search24Filled,
+    Send24Regular,
 } from "@fluentui/react-icons";
 
-import { TeamsFxContext } from "../../internal/context";
 import { openAIModel } from "../../models/openAIModel";
 import { askOpenAI } from "../../services/openAIService";
-import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
 import { widgetStyle } from "../lib/Widget.styles";
-import { emptyLayout, emptyTextStyle, widgetPaddingStyle } from "../styles/Common.styles";
-import {
-    addBtnStyle,
-    addTaskBtnStyle,
-    addTaskContainer,
-    bodyLayout,
-    existingTaskLayout,
-    inputCodeStyle,
-} from "../styles/OpenAI.styles";
 
-interface ITaskState {
-    tasks?: openAIModel[];
+interface IOpenAIState {
+    answer?: openAIModel[];
     loading: boolean;
     inputFocused?: boolean;
     addBtnOver?: boolean;
 }
 
-export class OpenAI extends Widget<ITaskState> {
+export class OpenAI extends Widget<IOpenAIState> {
     inputDivRef;
     btnRef;
     inputRef;
@@ -44,16 +36,17 @@ export class OpenAI extends Widget<ITaskState> {
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
 
-    async getData(): Promise<ITaskState> {
+    protected async getData(): Promise<IOpenAIState> {
         return {
-            // tasks: await getOpenAIResponse(),
+            // answer: await getOpenAIResponse(),
+            answer: [{ text: "sss" }, { text: "sss" }],
             inputFocused: false,
             addBtnOver: false,
             loading: false,
         };
     }
 
-    headerContent(): JSX.Element | undefined {
+    protected headerContent(): JSX.Element | undefined {
         return (
             <div className={widgetStyle.headerContent}>
                 <CodeTextEdit20Filled />
@@ -69,80 +62,57 @@ export class OpenAI extends Widget<ITaskState> {
         );
     }
 
-    bodyContent(): JSX.Element | undefined {
-        const hasTask = this.state.tasks?.length !== 0;
+    protected bodyContent(): JSX.Element | undefined {
+        const hasAnswer = true;
 
         return (
-            <div style={bodyLayout(hasTask)}>
-                <TeamsFxContext.Consumer>
-                    {({ themeString }) => this.inputLayout(themeString)}
-                </TeamsFxContext.Consumer>
-
-                {hasTask ? (
-                    this.state.tasks?.map((item: openAIModel) => {
-                        return (
-                            <TeamsFxContext.Consumer key={`consumer-task-${item.text}`}>
-                                {({ themeString }) => (
-                                    <div
-                                        key={`div-task-${item.text}`}
-                                        style={existingTaskLayout(themeString)}
-                                    >
-                                        {item.text}
-                                    </div>
-                                )}
-                            </TeamsFxContext.Consumer>
-                        );
-                    })
+            <div>
+                <div className="question-input-layout">
+                    {this.inputLayout()}
+                    <Button
+                        key={`bt-question-send`}
+                        icon={<Send24Regular />}
+                        onClick={() => {}}
+                        appearance="transparent"
+                    />
+                </div>
+                {hasAnswer ? (
+                    <div className="answer-layout">
+                        {this.state.answer?.map((item) => {
+                            return <div className="answer-content">{item.text}</div>;
+                        })}
+                    </div>
                 ) : (
-                    <div style={emptyLayout}>
-                        <EmptyThemeImg key="img-empty" />
-                        <Text key="text-empty" weight="semibold" style={emptyTextStyle}>
-                            Open AI Code Helper will answer your questions here
-                        </Text>
+                    <div className="empty-layout">
+                        <Image src="open-ai-empty.svg" className="empty-img" />
                     </div>
                 )}
             </div>
         );
     }
 
-    private inputLayout(themeString: string): JSX.Element | undefined {
+    private inputLayout(): JSX.Element | undefined {
         return (
-            <div
-                ref={this.inputDivRef}
-                style={addTaskContainer(themeString, this.state.inputFocused)}
-            >
-                {this.state.inputFocused ? (
-                    <Search12Regular style={addBtnStyle} />
-                ) : (
-                    <Search24Filled style={addBtnStyle} />
-                )}
-
+            <div ref={this.inputDivRef} className="question-input-content">
                 <input
                     ref={this.inputRef}
                     type="text"
-                    style={inputCodeStyle(this.state.inputFocused)}
+                    className="question-input"
                     onFocus={() => this.inputFocusedState()}
                     placeholder="Ask your questions to Code Helper"
                 />
 
                 {this.state.inputFocused && (
-                    <button
-                        style={addTaskBtnStyle(this.state.addBtnOver)}
-                        onClick={() => {
-                            this.onAddButtonClick();
-                        }}
-                        onMouseEnter={() => this.mouseEnterState()}
-                        onMouseLeave={() => this.mouseLeaveState()}
-                    >
-                        Ask
-                    </button>
+                    <Button
+                        key={`bt-question-clear`}
+                        className="question-clear-btn"
+                        icon={<DismissCircle24Regular />}
+                        onClick={() => this.clearQuestion()}
+                        appearance="transparent"
+                    />
                 )}
             </div>
         );
-    }
-
-    customiseWidgetStyle(): CSSProperties | undefined {
-        return widgetPaddingStyle;
     }
 
     async componentDidMount() {
@@ -157,40 +127,47 @@ export class OpenAI extends Widget<ITaskState> {
     private handleClickOutside(event: any) {
         if (!this.inputDivRef.current?.contains(event.target)) {
             this.setState({
-                tasks: this.state.tasks,
+                answer: this.state.answer,
                 inputFocused: false,
                 addBtnOver: this.state.addBtnOver,
                 loading: false,
             });
+            this.clearQuestion();
         }
     }
 
     private onAddButtonClick = async () => {
         if (this.inputRef.current && this.inputRef.current.value.length > 0) {
-            const tasks: openAIModel[] = await askOpenAI(this.inputRef.current.value);
+            const answer: openAIModel[] = await askOpenAI(this.inputRef.current.value);
             this.setState({
-                tasks: tasks,
+                answer: answer,
                 inputFocused: false,
                 addBtnOver: false,
                 loading: false,
             });
-            this.inputRef.current.value = "";
+            this.clearQuestion();
         }
     };
 
+    private clearQuestion() {
+        if (this.inputRef.current) {
+            this.inputRef.current.value = "";
+        }
+        this.setState({
+            inputFocused: false,
+            loading: false,
+        });
+    }
+
     private inputFocusedState = () => {
         this.setState({
-            tasks: this.state.tasks,
             inputFocused: true,
-            addBtnOver: this.state.addBtnOver,
             loading: false,
         });
     };
 
     private mouseEnterState = () => {
         this.setState({
-            tasks: this.state.tasks,
-            inputFocused: this.state.inputFocused,
             addBtnOver: true,
             loading: false,
         });
@@ -198,8 +175,6 @@ export class OpenAI extends Widget<ITaskState> {
 
     private mouseLeaveState = () => {
         this.setState({
-            tasks: this.state.tasks,
-            inputFocused: this.state.inputFocused,
             addBtnOver: false,
             loading: false,
         });

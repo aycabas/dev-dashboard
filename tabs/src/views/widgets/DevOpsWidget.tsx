@@ -15,14 +15,6 @@ import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
 import { widgetStyle } from "../lib/Widget.styles";
 import { emptyLayout, emptyTextStyle, widgetPaddingStyle } from "../styles/Common.styles";
-import {
-    addBtnStyle,
-    addTaskBtnStyle,
-    addTaskContainer,
-    bodyLayout,
-    existingTaskLayout,
-    inputCodeStyle,
-} from "../styles/OpenAI.styles";
 
 interface ITaskState {
     tasks?: DevOpsModel[];
@@ -69,7 +61,7 @@ export class DevOps extends Widget<ITaskState> {
     protected bodyContent(): JSX.Element | undefined {
         const hasTask = this.state.tasks?.length !== 0;
         return (
-            <div style={bodyLayout(hasTask)}>
+            <div>
                 <TeamsFxContext.Consumer>
                     {({ themeString }) => this.inputLayout(themeString)}
                 </TeamsFxContext.Consumer>
@@ -81,10 +73,7 @@ export class DevOps extends Widget<ITaskState> {
                                 key={`consumer-task-${item.properties[0].Title}`}
                             >
                                 {({ themeString }) => (
-                                    <div
-                                        key={`div-task-${item.properties[0].Title}`}
-                                        style={existingTaskLayout(themeString)}
-                                    >
+                                    <div key={`div-task-${item.properties[0].Title}`}>
                                         {item.properties[0].Title}
                                     </div>
                                 )}
@@ -113,27 +102,18 @@ export class DevOps extends Widget<ITaskState> {
 
     private inputLayout(themeString: string): JSX.Element | undefined {
         return (
-            <div
-                ref={this.inputDivRef}
-                style={addTaskContainer(themeString, this.state.inputFocused)}
-            >
-                {this.state.inputFocused ? (
-                    <Search12Regular style={addBtnStyle} />
-                ) : (
-                    <Search24Filled style={addBtnStyle} />
-                )}
+            <div ref={this.inputDivRef}>
+                {this.state.inputFocused ? <Search12Regular /> : <Search24Filled />}
 
                 <input
                     ref={this.inputRef}
                     type="text"
-                    style={inputCodeStyle(this.state.inputFocused)}
                     onFocus={() => this.inputFocusedState()}
                     placeholder="Search DevOps Work Items"
                 />
 
                 {this.state.inputFocused && (
                     <button
-                        style={addTaskBtnStyle(this.state.addBtnOver)}
                         onClick={() => {
                             this.onAddButtonClick();
                         }}

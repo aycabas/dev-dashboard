@@ -211,6 +211,7 @@ export class GithubIssues extends Widget<IIssueState> {
                 addBtnOver: this.state.addBtnOver,
                 loading: false,
             });
+            this.clearQuestion();
         }
     }
 
@@ -223,9 +224,15 @@ export class GithubIssues extends Widget<IIssueState> {
                 addBtnOver: false,
                 loading: false,
             });
-            this.inputRef.current.value = "";
+            this.clearQuestion();
         }
     };
+
+    private clearQuestion() {
+        if (this.inputRef.current) {
+            this.inputRef.current.value = "";
+        }
+    }
 
     private inputFocusedState = () => {
         this.setState({
