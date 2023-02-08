@@ -13,7 +13,6 @@ import {
 
 import { TeamsFxContext } from "../../internal/context";
 import { TaskModel } from "../../models/plannerTaskModel";
-import { callFunction } from "../../services/callFunction";
 import { addTask, getTasks } from "../../services/plannerService";
 import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
@@ -228,7 +227,6 @@ export class PlannerTask extends Widget<ITaskState> {
                 loading: false,
             });
             this.inputRef.current.value = "";
-            callFunction(this.inputRef.current.value);
         }
     };
 

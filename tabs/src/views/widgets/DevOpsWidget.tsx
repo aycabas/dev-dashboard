@@ -9,14 +9,13 @@ import {
     Search24Regular,
 } from "@fluentui/react-icons";
 
-import { TeamsFxContext } from "../../internal/context";
 import { DevOpsModel } from "../../models/devOpsModel";
-import { DevOpsSearch, DevOpsSearchMock } from "../../services/devopsService";
+import { DevOpsWorkItems } from "../../services/devopsService";
 import { Widget } from "../lib/Widget";
 import { widgetStyle } from "../lib/Widget.styles";
 
 interface IWorkItemState {
-    workItems?: DevOpsModel[];
+    devOpsData?: DevOpsModel[];
     inputFocused?: boolean;
     addBtnOver?: boolean;
 }
@@ -34,7 +33,7 @@ export class DevOps extends Widget<IWorkItemState> {
 
     protected async getData(): Promise<IWorkItemState> {
         return {
-            workItems: await DevOpsSearchMock(),
+            devOpsData: await DevOpsWorkItems(),
             inputFocused: false,
         };
     }
@@ -57,7 +56,7 @@ export class DevOps extends Widget<IWorkItemState> {
 
     protected bodyContent(): JSX.Element | undefined {
         const hasWorkItem =
-            this.state.workItems !== undefined && this.state.workItems?.length !== 0;
+            this.state.devOpsData !== undefined && this.state.devOpsData?.length !== 0;
         return (
             <div className="devops-body-layout">
                 <div ref={this.inputDivRef} className="devops-input-layout">
@@ -92,7 +91,7 @@ export class DevOps extends Widget<IWorkItemState> {
                                 WorkItemType
                             </Text>
                         </div>
-                        {this.state.workItems?.map((item: DevOpsModel, index) => {
+                        {this.state.devOpsData?.map((item: DevOpsModel, index) => {
                             return (
                                 <>
                                     {index !== 0 && (
@@ -102,9 +101,13 @@ export class DevOps extends Widget<IWorkItemState> {
                                         />
                                     )}
                                     <div key={`div-item-${index}`} className="work-items-layout">
-                                        <Text key={`text-item-title-${index}`}>{item.properties[0].Title}</Text>
-                                        <Text key={`text-item-url-${index}`}>{item.properties[0].URL}</Text>
-                                        <Text key={`text-item-type-${index}`}>{item.properties[0].WorkItemType}</Text>
+                                        <Text key={`text-item-title-${index}`}>
+                                            {item.fields.title}
+                                        </Text>
+                                        <Text key={`text-item-url-${index}`}>{item.url}</Text>
+                                        <Text key={`text-item-type-${index}`}>
+                                            {item.fields.workItemType}
+                                        </Text>
                                     </div>
                                 </>
                             );
@@ -139,7 +142,6 @@ export class DevOps extends Widget<IWorkItemState> {
     private handleClickOutside(event: any) {
         if (!this.inputDivRef.current?.contains(event.target)) {
             this.setState({
-                workItems: this.state.workItems,
                 inputFocused: false,
             });
         }
@@ -147,9 +149,9 @@ export class DevOps extends Widget<IWorkItemState> {
 
     private onSearchBtnClick = async () => {
         if (this.inputRef.current && this.inputRef.current.value.length > 0) {
-            const workItems: DevOpsModel[] = await DevOpsSearch(this.inputRef.current.value);
+            const devOpsData: DevOpsModel[] = [];
             this.setState({
-                workItems: workItems,
+                devOpsData: devOpsData,
                 inputFocused: false,
             });
             this.inputRef.current.value = "";
@@ -158,7 +160,6 @@ export class DevOps extends Widget<IWorkItemState> {
 
     private inputFocusedState = () => {
         this.setState({
-            workItems: this.state.workItems,
             inputFocused: true,
         });
     };

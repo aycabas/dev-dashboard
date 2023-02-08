@@ -36,7 +36,9 @@
 .devops-list-layout {
     display: grid;
     gap: 0.75rem;
+    overflow-x: hidden;
     align-items: start; 
+    min-width: 18rem;
 }
 
 .work-items-table-title-layout {
