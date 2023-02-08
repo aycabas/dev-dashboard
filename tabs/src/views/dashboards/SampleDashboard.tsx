@@ -1,5 +1,5 @@
 import { Dashboard } from '../lib/Dashboard';
-import { oneColumn } from "../lib/Dashboard.styles";
+import { OneRow } from "../lib/Dashboard.styles";
 import { OpenAI } from '../widgets/OpenAIWidget';
 import { GithubIssues } from '../widgets/GitHubWidget';
 import { PlannerTask } from '../widgets/PlannerTask';
@@ -11,16 +11,18 @@ export default class SampleDashboard extends Dashboard {
   }
 
   protected columnWidths(): string | undefined {
-    return "4fr 6fr";
+    return "6fr 4fr";
   }
 
   protected dashboardLayout(): undefined | JSX.Element {
     return (
       <>
-        <OpenAI />
-        <div style={oneColumn()}>
-          <DevOps />
-          <GithubIssues />
+
+        <DevOps />
+        <GithubIssues />
+
+        <div style={OneRow()}>
+          <OpenAI />
           <PlannerTask />
         </div>
 
