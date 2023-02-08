@@ -1,44 +1,41 @@
-import React, { CSSProperties } from "react";
+import "../styles/DevOps.css";
 
-import { Button, Spinner, Text } from "@fluentui/react-components";
+import React from "react";
+
+import { Button, Image, Spinner, Text } from "@fluentui/react-components";
 import {
     CodeTextEdit20Filled,
     MoreHorizontal32Regular,
-    Search12Regular,
-    Search24Filled,
+    Search24Regular,
 } from "@fluentui/react-icons";
 
 import { TeamsFxContext } from "../../internal/context";
 import { DevOpsModel } from "../../models/devOpsModel";
-import { DevOpsSearch } from "../../services/devopsService";
-import { EmptyThemeImg } from "../components/EmptyThemeImg";
+import { DevOpsSearch, DevOpsSearchMock } from "../../services/devopsService";
 import { Widget } from "../lib/Widget";
 import { widgetStyle } from "../lib/Widget.styles";
-import { emptyLayout, emptyTextStyle, widgetPaddingStyle } from "../styles/Common.styles";
 
-interface ITaskState {
-    tasks?: DevOpsModel[];
+interface IWorkItemState {
+    workItems?: DevOpsModel[];
     inputFocused?: boolean;
     addBtnOver?: boolean;
 }
 
-export class DevOps extends Widget<ITaskState> {
+export class DevOps extends Widget<IWorkItemState> {
     inputDivRef;
-    btnRef;
     inputRef;
 
     constructor(props: any) {
         super(props);
         this.inputRef = React.createRef<HTMLInputElement>();
         this.inputDivRef = React.createRef<HTMLDivElement>();
-        this.btnRef = React.createRef<HTMLButtonElement>();
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
 
-    protected async getData(): Promise<ITaskState> {
+    protected async getData(): Promise<IWorkItemState> {
         return {
+            workItems: await DevOpsSearchMock(),
             inputFocused: false,
-            addBtnOver: false,
         };
     }
 
@@ -59,33 +56,63 @@ export class DevOps extends Widget<ITaskState> {
     }
 
     protected bodyContent(): JSX.Element | undefined {
-        const hasTask = this.state.tasks?.length !== 0;
+        const hasWorkItem =
+            this.state.workItems !== undefined && this.state.workItems?.length !== 0;
         return (
-            <div>
-                <TeamsFxContext.Consumer>
-                    {({ themeString }) => this.inputLayout(themeString)}
-                </TeamsFxContext.Consumer>
+            <div className="devops-body-layout">
+                <div ref={this.inputDivRef} className="devops-input-layout">
+                    <div className="devops-input-content">
+                        <input
+                            ref={this.inputRef}
+                            type="text"
+                            onFocus={() => this.inputFocusedState()}
+                            className="devops-input"
+                            placeholder="Search DevOps Work Items"
+                        />
 
-                {hasTask ? (
-                    this.state.tasks?.map((item: DevOpsModel) => {
-                        return (
-                            <TeamsFxContext.Consumer
-                                key={`consumer-task-${item.properties[0].Title}`}
-                            >
-                                {({ themeString }) => (
-                                    <div key={`div-task-${item.properties[0].Title}`}>
-                                        {item.properties[0].Title}
+                        <Button
+                            key={`bt-question-send`}
+                            icon={<Search24Regular />}
+                            onClick={() => this.onSearchBtnClick()}
+                            appearance="transparent"
+                        />
+                    </div>
+                </div>
+
+                {hasWorkItem ? (
+                    <div className="devops-list-layout">
+                        <div className="work-items-table-title-layout">
+                            <Text key="text-work-item-title" className="work-items-table-title">
+                                Title
+                            </Text>
+                            <Text key="text-work-item-url" className="work-items-table-title">
+                                URL
+                            </Text>
+                            <Text key="text-work-item-type" className="work-items-table-title">
+                                WorkItemType
+                            </Text>
+                        </div>
+                        {this.state.workItems?.map((item: DevOpsModel, index) => {
+                            return (
+                                <>
+                                    {index !== 0 && (
+                                        <div
+                                            key={`div-items-divider-${index}`}
+                                            className="divider"
+                                        />
+                                    )}
+                                    <div key={`div-item-${index}`} className="work-items-layout">
+                                        <Text key={`text-item-title-${index}`}>{item.properties[0].Title}</Text>
+                                        <Text key={`text-item-url-${index}`}>{item.properties[0].URL}</Text>
+                                        <Text key={`text-item-type-${index}`}>{item.properties[0].WorkItemType}</Text>
                                     </div>
-                                )}
-                            </TeamsFxContext.Consumer>
-                        );
-                    })
+                                </>
+                            );
+                        })}
+                    </div>
                 ) : (
-                    <div style={emptyLayout}>
-                        <EmptyThemeImg key="img-empty" />
-                        <Text key="text-empty" weight="semibold" style={emptyTextStyle}>
-                            Open AI Code Helper will answer your questions here
-                        </Text>
+                    <div className="empty-layout">
+                        <Image src="open-ai-empty.svg" className="empty-img" />
                     </div>
                 )}
             </div>
@@ -100,37 +127,6 @@ export class DevOps extends Widget<ITaskState> {
         );
     }
 
-    private inputLayout(themeString: string): JSX.Element | undefined {
-        return (
-            <div ref={this.inputDivRef}>
-                {this.state.inputFocused ? <Search12Regular /> : <Search24Filled />}
-
-                <input
-                    ref={this.inputRef}
-                    type="text"
-                    onFocus={() => this.inputFocusedState()}
-                    placeholder="Search DevOps Work Items"
-                />
-
-                {this.state.inputFocused && (
-                    <button
-                        onClick={() => {
-                            this.onAddButtonClick();
-                        }}
-                        onMouseEnter={() => this.mouseEnterState()}
-                        onMouseLeave={() => this.mouseLeaveState()}
-                    >
-                        Ask
-                    </button>
-                )}
-            </div>
-        );
-    }
-
-    customiseWidgetStyle(): CSSProperties | undefined {
-        return widgetPaddingStyle;
-    }
-
     async componentDidMount() {
         super.componentDidMount();
         document.addEventListener("mousedown", this.handleClickOutside);
@@ -143,22 +139,18 @@ export class DevOps extends Widget<ITaskState> {
     private handleClickOutside(event: any) {
         if (!this.inputDivRef.current?.contains(event.target)) {
             this.setState({
-                tasks: this.state.tasks,
+                workItems: this.state.workItems,
                 inputFocused: false,
-                addBtnOver: this.state.addBtnOver,
-                loading: false,
             });
         }
     }
 
-    private onAddButtonClick = async () => {
+    private onSearchBtnClick = async () => {
         if (this.inputRef.current && this.inputRef.current.value.length > 0) {
-            const tasks: DevOpsModel[] = await DevOpsSearch(this.inputRef.current.value);
+            const workItems: DevOpsModel[] = await DevOpsSearch(this.inputRef.current.value);
             this.setState({
-                tasks: tasks,
+                workItems: workItems,
                 inputFocused: false,
-                addBtnOver: false,
-                loading: false,
             });
             this.inputRef.current.value = "";
         }
@@ -166,28 +158,8 @@ export class DevOps extends Widget<ITaskState> {
 
     private inputFocusedState = () => {
         this.setState({
-            tasks: this.state.tasks,
+            workItems: this.state.workItems,
             inputFocused: true,
-            addBtnOver: this.state.addBtnOver,
-            loading: false,
-        });
-    };
-
-    private mouseEnterState = () => {
-        this.setState({
-            tasks: this.state.tasks,
-            inputFocused: this.state.inputFocused,
-            addBtnOver: true,
-            loading: false,
-        });
-    };
-
-    private mouseLeaveState = () => {
-        this.setState({
-            tasks: this.state.tasks,
-            inputFocused: this.state.inputFocused,
-            addBtnOver: false,
-            loading: false,
         });
     };
 }
