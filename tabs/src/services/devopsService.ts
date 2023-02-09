@@ -24,20 +24,27 @@ export async function DevOpsWorkItems(): Promise<DevOpsModel[]> {
             const tmp: DevOpsModel = {
                 id: obj["id"],
                 url: obj["url"],
-                fields:
-                {
+                fields: {
                     title: obj["fields"]["System.Title"],
                     workItemType: obj["fields"]["System.WorkItemType"],
-                    createdBy: {
-                        displayName: obj["fields"]["System.CreatedBy"]["displayName"],
+                    assigendTo: {
+                        displayName:
+                            obj["fields"]["System.AssignedTo"] !== undefined
+                                ? obj["fields"]["System.AssignedTo"]["displayName"]
+                                : "",
                         links: {
-                            avatar:
-                            {
-                                href: obj["fields"]["System.CreatedBy"]["_links"]["avatar"]["href"]
-                            }
-                        }
-                    }
-                }
+                            avatar: {
+                                href:
+                                    obj["fields"]["System.AssignedTo"] !== undefined
+                                        ? obj["fields"]["System.AssignedTo"]["_links"]["avatar"][
+                                              "href"
+                                          ]
+                                        : "",
+                            },
+                        },
+                    },
+                    state: obj["fields"]["System.State"],
+                },
             };
 
 

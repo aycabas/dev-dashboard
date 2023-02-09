@@ -2,11 +2,11 @@ import "../styles/DevOps.css";
 
 import React from "react";
 
-import { Button, Image, Spinner, Text } from "@fluentui/react-components";
+import { Avatar, Button, Image, Spinner, Text } from "@fluentui/react-components";
 import {
+    ArrowRight16Filled,
     CodeTextEdit20Filled,
     MoreHorizontal32Regular,
-    Search24Regular,
 } from "@fluentui/react-icons";
 
 import { DevOpsModel } from "../../models/devOpsModel";
@@ -43,7 +43,7 @@ export class DevOps extends Widget<IWorkItemState> {
             <div className={widgetStyle.headerContent}>
                 <CodeTextEdit20Filled />
                 <Text key="text-task-title" className={widgetStyle.headerText}>
-                    DevOps Work Items Search
+                    Features backlog
                 </Text>
                 <Button
                     key="bt-task-more"
@@ -59,7 +59,7 @@ export class DevOps extends Widget<IWorkItemState> {
             this.state.devOpsData !== undefined && this.state.devOpsData?.length !== 0;
         return (
             <div className="devops-body-layout">
-                <div ref={this.inputDivRef} className="devops-input-layout">
+                {/* <div ref={this.inputDivRef} className="devops-input-layout">
                     <div className="devops-input-content">
                         <input
                             ref={this.inputRef}
@@ -76,7 +76,7 @@ export class DevOps extends Widget<IWorkItemState> {
                             appearance="transparent"
                         />
                     </div>
-                </div>
+                </div> */}
 
                 {hasWorkItem ? (
                     <div className="devops-list-layout">
@@ -84,11 +84,14 @@ export class DevOps extends Widget<IWorkItemState> {
                             <Text key="text-work-item-title" className="work-items-table-title">
                                 Title
                             </Text>
-                            <Text key="text-work-item-url" className="work-items-table-title">
-                                URL
-                            </Text>
                             <Text key="text-work-item-type" className="work-items-table-title">
-                                WorkItemType
+                                Type
+                            </Text>
+                            <Text key="text-work-item-assigned" className="work-items-table-title">
+                                Assigned To
+                            </Text>
+                            <Text key="text-work-item-state" className="work-items-table-title">
+                                State
                             </Text>
                         </div>
                         {this.state.devOpsData?.map((item: DevOpsModel, index) => {
@@ -104,9 +107,27 @@ export class DevOps extends Widget<IWorkItemState> {
                                         <Text key={`text-item-title-${index}`}>
                                             {item.fields.title}
                                         </Text>
-                                        <Text key={`text-item-url-${index}`}>{item.url}</Text>
                                         <Text key={`text-item-type-${index}`}>
                                             {item.fields.workItemType}
+                                        </Text>
+                                        <div
+                                            key={`div-item-assigned-${item.id}`}
+                                            className="work-items-assigned-layout"
+                                        >
+                                            <Avatar
+                                                key={`avatar-item-assigned-${item.id}`}
+                                                name={item.fields.assigendTo?.displayName}
+                                                image={{
+                                                    src: `${item.fields.assigendTo?.links?.avatar?.href}`,
+                                                }}
+                                                size={16}
+                                            />
+                                            <Text key={`text-item-assigned-${item.id}`}>
+                                                {item.fields.assigendTo?.displayName}
+                                            </Text>
+                                        </div>
+                                        <Text key={`text-item-state-${index}`}>
+                                            {item.fields.state}
                                         </Text>
                                     </div>
                                 </>
@@ -120,6 +141,25 @@ export class DevOps extends Widget<IWorkItemState> {
                 )}
             </div>
         );
+    }
+
+    protected footerContent(): JSX.Element | undefined {
+        if (!this.state.loading && this.state.devOpsData?.length !== 0) {
+            return (
+                <Button
+                    appearance="transparent"
+                    icon={<ArrowRight16Filled />}
+                    iconPosition="after"
+                    size="small"
+                    className={widgetStyle.footerBtn}
+                    onClick={() => {}} // navigate to detailed page
+                >
+                    View all
+                </Button>
+            );
+        } else {
+            return undefined;
+        }
     }
 
     protected loadingContent(): JSX.Element | undefined {

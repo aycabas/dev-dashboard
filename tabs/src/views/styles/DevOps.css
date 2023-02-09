@@ -1,7 +1,8 @@
 .devops-body-layout {
     display: grid;
     gap: 1rem;
-    align-content: start;
+    overflow-x: hidden;
+    padding-left: 0.375rem;
 }
 
 .devops-input-layout {
@@ -36,14 +37,12 @@
 .devops-list-layout {
     display: grid;
     gap: 0.75rem;
-    overflow-x: hidden;
-    align-items: start; 
-    min-width: 18rem;
+    align-items: start;
 }
 
 .work-items-table-title-layout {
     display: grid !important;
-    grid-template-columns: 2fr 3fr 1fr;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
     gap: 0.6rem;
 }
 
@@ -56,7 +55,7 @@
 
 .work-items-layout {
     display: grid;
-    grid-template-columns: 2fr 3fr 1fr;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
     gap: 0.6rem;
     overflow-x: auto;
     align-content: center;
@@ -65,4 +64,12 @@
 .divider {
     height: 1px;
     background-color: var(--colorNeutralStroke2);
-  }
+}
+
+.work-items-assigned-layout {
+    display: grid;
+    gap: 0.25rem;
+    align-items: center;
+    grid-template-columns: max-content 1fr;
+    min-width: 8rem;
+}

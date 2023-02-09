@@ -7,16 +7,17 @@ export interface DevOpsModel {
 export interface DevOpsFieldsModel {
     title?: string;
     workItemType?: string;
-    createdBy?: DevOpsFieldsCreatedByModel;
+    assigendTo?: DevOpsFieldsAssignedToModel;
+    state?: string;
 }
 
-export interface DevOpsFieldsCreatedByModel {
+export interface DevOpsFieldsAssignedToModel {
     displayName?: string;
-    links?: DevOpsFieldsCreatedByAvatarModel;
+    links?: DevOpsFieldsAssignedToAvatarModel;
 }
-export interface DevOpsFieldsCreatedByAvatarModel {
-    avatar?: DevOpsFieldsCreatedByAvatarHrefModel;
+export interface DevOpsFieldsAssignedToAvatarModel {
+    avatar?: DevOpsFieldsAssignedToAvatarHrefModel;
 }
-export interface DevOpsFieldsCreatedByAvatarHrefModel {
+export interface DevOpsFieldsAssignedToAvatarHrefModel {
     href?: string;
 }

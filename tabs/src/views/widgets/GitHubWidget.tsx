@@ -1,6 +1,6 @@
 import "../styles/GitHub.css";
 
-import React, { CSSProperties } from "react";
+import React from "react";
 
 import { Button, Text } from "@fluentui/react-components";
 import {
@@ -17,7 +17,7 @@ import { createIssue, getIssues } from "../../services/githubService";
 import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
 import { widgetStyle } from "../lib/Widget.styles";
-import { emptyLayout, emptyTextStyle, widgetPaddingStyle } from "../styles/Common.styles";
+import { emptyLayout, emptyTextStyle } from "../styles/Common.styles";
 import { mergeStyles } from "@fluentui/react";
 
 interface IIssueState {
@@ -188,10 +188,6 @@ export class GithubIssues extends Widget<IIssueState> {
                 )}
             </div>
         );
-    }
-
-    customiseWidgetStyle(): CSSProperties | undefined {
-        return widgetPaddingStyle;
     }
 
     async componentDidMount() {
