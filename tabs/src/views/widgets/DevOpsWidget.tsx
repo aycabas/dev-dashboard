@@ -5,7 +5,7 @@ import React from "react";
 import { Avatar, Button, Image, Spinner, Text } from "@fluentui/react-components";
 import {
     ArrowRight16Filled,
-    CodeTextEdit20Filled,
+    CircleSmall20Filled,
     MoreHorizontal32Regular,
 } from "@fluentui/react-icons";
 
@@ -13,6 +13,7 @@ import { DevOpsModel } from "../../models/devOpsModel";
 import { DevOpsWorkItems } from "../../services/devopsService";
 import { Widget } from "../lib/Widget";
 import { widgetStyle } from "../lib/Widget.styles";
+import { TeamsFxContext } from "../../internal/context";
 
 interface IWorkItemState {
     devOpsData?: DevOpsModel[];
@@ -41,7 +42,19 @@ export class DevOps extends Widget<IWorkItemState> {
     protected headerContent(): JSX.Element | undefined {
         return (
             <div className={widgetStyle.headerContent}>
-                <CodeTextEdit20Filled />
+                <TeamsFxContext.Consumer>
+                    {({ themeString }) =>
+                        themeString === "default" ? (
+                            <Image
+                                key="icon-devops-default"
+                                width="20px"
+                                src="devops-default.svg"
+                            />
+                        ) : (
+                            <Image key="icon-devops-dark" width="20px" src="devops-dark.svg" />
+                        )
+                    }
+                </TeamsFxContext.Consumer>
                 <Text key="text-task-title" className={widgetStyle.headerText}>
                     Features backlog
                 </Text>
@@ -59,25 +72,6 @@ export class DevOps extends Widget<IWorkItemState> {
             this.state.devOpsData !== undefined && this.state.devOpsData?.length !== 0;
         return (
             <div className="devops-body-layout">
-                {/* <div ref={this.inputDivRef} className="devops-input-layout">
-                    <div className="devops-input-content">
-                        <input
-                            ref={this.inputRef}
-                            type="text"
-                            onFocus={() => this.inputFocusedState()}
-                            className="devops-input"
-                            placeholder="Search DevOps Work Items"
-                        />
-
-                        <Button
-                            key={`bt-question-send`}
-                            icon={<Search24Regular />}
-                            onClick={() => this.onSearchBtnClick()}
-                            appearance="transparent"
-                        />
-                    </div>
-                </div> */}
-
                 {hasWorkItem ? (
                     <div className="devops-list-layout">
                         <div className="work-items-table-title-layout">
@@ -112,7 +106,7 @@ export class DevOps extends Widget<IWorkItemState> {
                                         </Text>
                                         <div
                                             key={`div-item-assigned-${item.id}`}
-                                            className="work-items-assigned-layout"
+                                            className="work-items-assigned-state-layout"
                                         >
                                             <Avatar
                                                 key={`avatar-item-assigned-${item.id}`}
@@ -126,9 +120,12 @@ export class DevOps extends Widget<IWorkItemState> {
                                                 {item.fields.assigendTo?.displayName}
                                             </Text>
                                         </div>
-                                        <Text key={`text-item-state-${index}`}>
-                                            {item.fields.state}
-                                        </Text>
+                                        <div className="work-items-assigned-state-layout">
+                                            <CircleSmall20Filled className="state-icon"/>
+                                            <Text key={`text-item-state-${index}`}>
+                                                {item.fields.state}
+                                            </Text>
+                                        </div>
                                     </div>
                                 </>
                             );
@@ -154,7 +151,7 @@ export class DevOps extends Widget<IWorkItemState> {
                     className={widgetStyle.footerBtn}
                     onClick={() => {}} // navigate to detailed page
                 >
-                    View all
+                    View query
                 </Button>
             );
         } else {

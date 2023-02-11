@@ -11,7 +11,6 @@
 
 .has-issue-layout {
     display: grid;
-    gap: 0.25rem;
     overflow-x: hidden;
     min-width: 18rem;
     align-content: start;
@@ -32,27 +31,24 @@
 
 .issue-input {
     border: none;
-    border: none;
     outline: medium;
     height: 1.75rem;
     margin-left: -0.35rem;
     font-size: 0.875rem;
-    color: var(--colorNeutralForeground1);
+    background-color: var(--colorNeutralBackground3) !important;
 }
 
 input::placeholder {
-    color: var(--colorBrandForeground1) !important;
+    color: var(--colorPaletteBlueBorderActive) !important;
 }
 
 .issue-input-focused {
     grid-template-columns: 1fr max-content !important;
-    background-color: var(--colorNeutralBackground6);
     padding-left: 1.225rem !important;
 }
 
 .issue-input-unfocused {
     grid-template-columns: max-content 1fr max-content;
-    background-color: var(--colorNeutralBackground3);
 }
 
 .add-issue-layout {
@@ -60,10 +56,11 @@ input::placeholder {
     grid-template-columns: max-content 1fr max-content;
     gap: 1rem;
     align-items: center;
-    border-radius: 4px;
+    border: 1px solid var(--colorNeutralStroke1);
     height: 2.25rem;
     padding-left: 0.875rem;
     padding-right: 0.7rem;
+    background-color: var(--colorNeutralBackground3);
 }
 
 .add-btn-enter {
@@ -86,32 +83,28 @@ input::placeholder {
     background-color: var(--colorNeutralStrokeOnBrand2);
 }
 
-.issue-item-layout {
+.issue-item-even-layout {
     display: grid;
-    grid-template-columns: 1fr max-content;
+    grid-template-columns: max-content 1fr max-content;
     gap: 1rem;
     align-items: center;
-    background-color: var(--colorNeutralBackground3);
-    border-radius: 4px;
-    padding-left: 1.225rem;
-    padding-right: 0.7rem;
+    padding: 0.625rem 0.7rem 0.625rem 1.225rem;
 }
 
-.issue-item-left-layout {
+.issue-item-odd-layout {
     display: grid;
-}
-
-.bug-icon {
-    width: 12px !important;
-    height: 16px !important;
-    margin-top: 3px;
+    grid-template-columns: max-content 1fr max-content;
+    gap: 1rem;
+    align-items: center;
+    background-color: var(--colorNeutralBackground2);
+    border-top: 1px solid var(--colorNeutralStencil1);
+    border-bottom: 1px solid var(--colorNeutralStencil1);
+    padding: 0.625rem 0.7rem 0.625rem 1.225rem;
 }
 
 .issue-content-layout {
     display: grid;
-    grid-template-columns: max-content 1fr;
     align-content: start;
-    gap: 0.635rem;
 }
 
 .issue-desc {
@@ -124,7 +117,13 @@ input::placeholder {
     white-space: nowrap !important;
 }
 
-.issue-share-btn {
+.btn-issue-share {
     align-self: self-start;
     color: var(--colorNeutralForeground3) !important;
+    padding: 0 !important;
+}
+
+.img-issue {
+    width: 1.125rem;
+    align-self: self-start;
 }

@@ -34,7 +34,7 @@ export const widgetStyle = mergeStyleSets({
     headerText: {
         fontWeight: "600 !important",
         lineHeight: "1rem !important",
-        fontSize: "1rem !important",
+        fontSize: "0.75rem !important",
     },
     footerBtn: {
         width: "fit-content",

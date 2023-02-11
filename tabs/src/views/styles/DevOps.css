@@ -41,15 +41,16 @@
 }
 
 .work-items-table-title-layout {
-    display: grid !important;
+    display: grid;
     grid-template-columns: 3fr 1fr 1fr 1fr;
     gap: 0.6rem;
+    align-items: center;
 }
 
 .work-items-table-title {
-    font-size: 0.75rem !important;
+    font-size: 0.875rem !important;
     font-weight: 400 !important;
-    line-height: 1.875rem !important;
+    line-height: 1.25rem !important;
     color: var(--colorNeutralForeground4) !important;
 }
 
@@ -66,10 +67,13 @@
     background-color: var(--colorNeutralStroke2);
 }
 
-.work-items-assigned-layout {
+.work-items-assigned-state-layout {
     display: grid;
     gap: 0.25rem;
     align-items: center;
-    grid-template-columns: max-content 1fr;
-    min-width: 8rem;
+    grid-template-columns: max-content max-content;
+}
+
+.state-icon {
+    color: var(--colorNeutralStroke1);
 }

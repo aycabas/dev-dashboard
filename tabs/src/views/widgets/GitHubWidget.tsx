@@ -2,7 +2,7 @@ import "../styles/GitHub.css";
 
 import React from "react";
 
-import { Button, Text } from "@fluentui/react-components";
+import { Button, Image, Text } from "@fluentui/react-components";
 import {
     Add20Filled,
     ArrowRight16Filled,
@@ -69,51 +69,40 @@ export class GithubIssues extends Widget<IIssueState> {
         const hasIssue = this.state.issues?.length !== 0;
         return (
             <div className={hasIssue ? "has-issue-layout" : "no-issue-layout"}>
-                <TeamsFxContext.Consumer>
-                    {({ themeString }) => this.inputLayout(themeString)}
-                </TeamsFxContext.Consumer>
+                {this.inputLayout()}
                 {hasIssue ? (
-                    this.state.issues?.map((item: githubIssuesModel) => {
+                    this.state.issues?.map((item: githubIssuesModel, index) => {
                         return (
-                            <TeamsFxContext.Consumer key={`consumer-issue-${item.title}`}>
-                                {({ themeString }) => (
-                                    <div
-                                        key={`div-issue-${item.title}`}
-                                        className={mergeStyles(
-                                            "issue-item-layout",
-                                            themeString === "contrast" ? "border-style" : ""
-                                        )}
-                                    >
-                                        <div className="issue-item-left-layout">
-                                            <div className="issue-content-layout">
-                                                <LadybugSolidIcon className="bug-icon" />
-                                                <Text
-                                                    key={`cb-issue-${item.title}`}
-                                                    className="issue-title"
-                                                >
-                                                    [{item.state}] {item.title}
-                                                </Text>
-                                            </div>
-                                            {item.body && (
-                                                <Text
-                                                    key={`div-issue-${item.title}`}
-                                                    className="issue-desc"
-                                                >
-                                                    {item.body}
-                                                </Text>
-                                            )}
-                                        </div>
-
-                                        <Button
-                                            key={`bt-issue-${item.title}`}
-                                            className="issue-share-btn"
-                                            icon={<Open16Regular />}
-                                            onClick={() => window.open(item.url, "_blank")}
-                                            appearance="transparent"
-                                        />
-                                    </div>
-                                )}
-                            </TeamsFxContext.Consumer>
+                            <div
+                                key={`div-issue-${item.title}`}
+                                className={
+                                    index % 2 === 0
+                                        ? "issue-item-even-layout"
+                                        : "issue-item-odd-layout"
+                                }
+                            >
+                                <Image src="issue.svg" className="img-issue" />
+                                <div className="issue-content-layout">
+                                    <Text key={`cb-issue-${item.title}`} className="issue-title">
+                                        [{item.state}] {item.title}
+                                    </Text>
+                                    {item.body && (
+                                        <Text
+                                            key={`div-issue-${item.title}`}
+                                            className="issue-desc"
+                                        >
+                                            {item.body}
+                                        </Text>
+                                    )}
+                                </div>
+                                <Button
+                                    key={`bt-issue-${item.title}`}
+                                    className="btn-issue-share"
+                                    icon={<Open16Regular />}
+                                    onClick={() => window.open(item.url, "_blank")}
+                                    appearance="transparent"
+                                />
+                            </div>
                         );
                     })
                 ) : (
@@ -152,14 +141,13 @@ export class GithubIssues extends Widget<IIssueState> {
         }
     }
 
-    private inputLayout(themeString: string): JSX.Element | undefined {
+    private inputLayout(): JSX.Element | undefined {
         return (
             <div
                 ref={this.inputDivRef}
                 className={mergeStyles(
                     "add-issue-layout",
-                    this.state.inputFocused ? "issue-input-focused" : "issue-input-unfocused",
-                    themeString === "contrast" ? "border-style" : ""
+                    this.state.inputFocused ? "issue-input-focused" : "issue-input-unfocused"
                 )}
             >
                 {!this.state.inputFocused && <Add20Filled className="issue-add-icon" />}
@@ -167,12 +155,9 @@ export class GithubIssues extends Widget<IIssueState> {
                 <input
                     ref={this.inputRef}
                     type="text"
-                    className={mergeStyles(
-                        "issue-input",
-                        this.state.inputFocused ? "focused-color" : "non-focused-color"
-                    )}
+                    className="issue-input"
                     onFocus={() => this.inputFocusedState()}
-                    placeholder="Create a new issue"
+                    placeholder="Create new"
                 />
                 {this.state.inputFocused && (
                     <button
