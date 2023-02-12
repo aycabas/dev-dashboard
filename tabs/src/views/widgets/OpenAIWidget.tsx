@@ -36,8 +36,6 @@ export class OpenAI extends Widget<IOpenAIState> {
 
     protected async getData(): Promise<IOpenAIState> {
         return {
-            // answer: await getOpenAIResponse(),
-            // answer: [{ text: "sss" }, { text: "sss" }],
             inputFocused: false,
         };
     }
@@ -61,7 +59,7 @@ export class OpenAI extends Widget<IOpenAIState> {
     protected bodyContent(): JSX.Element | undefined {
         const hasAnswer = this.state.answer !== undefined;
         return (
-            <div>
+            <div className="ai-layout">
                 <div ref={this.inputDivRef} className="question-input-layout">
                     <div className="question-input-content">
                         <input
@@ -90,8 +88,8 @@ export class OpenAI extends Widget<IOpenAIState> {
                 </div>
                 {hasAnswer ? (
                     <div className="answer-layout">
-                        {this.state.answer?.map((item) => {
-                            return <div className="answer-content">{item.text}</div>;
+                        {this.state.answer?.map((item: openAIModel) => {
+                            return item.isCode ? <code><pre>{item.text}</pre></code> : <pre>{item.text}</pre>;
                         })}
                     </div>
                 ) : (
@@ -101,6 +99,10 @@ export class OpenAI extends Widget<IOpenAIState> {
                 )}
             </div>
         );
+    }
+
+    protected stylingWidget(): string | React.CSSProperties {
+        return "open-ai-widget";
     }
 
     async componentDidMount() {

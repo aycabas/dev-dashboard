@@ -1,3 +1,14 @@
+.open-ai-widget {
+   grid-template-rows: max-content 1fr;
+}
+
+.ai-layout {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    gap: 1.25rem;
+    overflow-x: auto;
+}
+
 .question-input-layout {
     display: grid;
     grid-template-columns: 1fr max-content;
@@ -30,15 +41,25 @@
 .answer-layout {
     display: grid;
     gap: 1rem;
-    overflow-y: hidden;
-    min-height: 18rem;
-    margin-top: 1rem;
     align-content: start;
+    height: 100%;
+    overflow-x: auto;
+}
+
+pre {
+    margin: 0;
+}
+
+code {
+    background-color: #eee;
+    border: 1px solid #999;
+    display: block;
+    padding: 0.25rem 1rem 1rem 1rem;
 }
 
 .answer-content {
-   width: 100%;
-   height: max-content;
-   border-radius: 4px;
-   background-color: var(--colorNeutralBackground3);
+    width: 100%;
+    height: max-content;
+    border-radius: 4px;
+    background-color: var(--colorNeutralBackground3);
 }
