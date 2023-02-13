@@ -9,7 +9,7 @@ export async function DevOpsWorkItems(): Promise<DevOpsModel[]> {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8;',
-                'Authorization': "Basic " + btoa('Basic' + ":" + '')
+                'Authorization': "Basic " + btoa('Basic' + ":" + 'DEVOPS-PERSONAL-ACCESS-TOKEN')
             },
         }).then((response) => response.json())
             .then(req => {
