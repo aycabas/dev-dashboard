@@ -4,7 +4,7 @@ import "../styles/Common.css";
 import React from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 
-import { Button, Image, Text } from "@fluentui/react-components";
+import { Button, Image, Spinner, Text } from "@fluentui/react-components";
 import {
     CodeTextEdit20Filled,
     Copy24Regular,
@@ -21,6 +21,7 @@ import { widgetStyle } from "../lib/Widget.styles";
 interface IOpenAIState {
     answer?: openAIModel[];
     inputFocused?: boolean;
+    onRequest?: boolean;
 }
 
 export class OpenAI extends Widget<IOpenAIState> {
@@ -39,6 +40,7 @@ export class OpenAI extends Widget<IOpenAIState> {
     protected async getData(): Promise<IOpenAIState> {
         return {
             inputFocused: false,
+            onRequest: false,
         };
     }
 
@@ -70,6 +72,7 @@ export class OpenAI extends Widget<IOpenAIState> {
                             className="question-input"
                             onFocus={() => this.inputFocusedState()}
                             placeholder="Ask your questions to Code Helper"
+                            disabled={this.state.onRequest === true ? true : false}
                         />
                         {this.state.inputFocused && (
                             <Button
@@ -81,12 +84,16 @@ export class OpenAI extends Widget<IOpenAIState> {
                             />
                         )}
                     </div>
-                    <Button
-                        key={`bt-question-send`}
-                        icon={<Send24Regular />}
-                        onClick={() => this.onSendButtonClick()}
-                        appearance="transparent"
-                    />
+                    {this.state.onRequest === true ? (
+                        <Spinner size="tiny" />
+                    ) : (
+                        <Button
+                            key={`bt-question-send`}
+                            icon={<Send24Regular />}
+                            onClick={() => this.onSendButtonClick()}
+                            appearance="transparent"
+                        />
+                    )}
                 </div>
                 {hasAnswer ? (
                     <div className="answer-layout">
@@ -144,10 +151,12 @@ export class OpenAI extends Widget<IOpenAIState> {
 
     private onSendButtonClick = async () => {
         if (this.inputRef.current && this.inputRef.current.value.length > 0) {
+            this.setState({ onRequest: true, inputFocused: false, answer: undefined });
             const answer: openAIModel[] = await askOpenAI(this.inputRef.current.value);
             this.setState({
                 answer: answer,
                 inputFocused: false,
+                onRequest: false,
             });
             this.clearQuestion();
         }
