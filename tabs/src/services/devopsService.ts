@@ -1,20 +1,21 @@
 import { DevOpsModel } from "../models/devOpsModel";
 export async function DevOpsWorkItems(): Promise<DevOpsModel[]> {
-
-
     try {
-
         let devopsItems: DevOpsModel[] = [];
-        const req = await fetch('https://dev.azure.com/DemoContosoOrg/ContosoProject/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8;',
-                'Authorization': "Basic " + btoa('Basic' + ":" + 'DEVOPS-PERSONAL-ACCESS-TOKEN')
-            },
-        }).then((response) => response.json())
-            .then(req => {
+        const req = await fetch(
+            "https://dev.azure.com/DemoContosoOrg/ContosoProject/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0",
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8;",
+                    Authorization: "Basic " + btoa("Basic" + ":" + "DEVOPS-PERSONAL-ACCESS-TOKEN"),
+                },
+            }
+        )
+            .then((response) => response.json())
+            .then((req) => {
                 return req;
-            })
+            });
 
         //var value = JSON.parse(req);
 
@@ -47,15 +48,10 @@ export async function DevOpsWorkItems(): Promise<DevOpsModel[]> {
                 },
             };
 
-
             devopsItems.push(tmp);
-
         }
         return devopsItems;
-
     } catch (e) {
         throw e;
     }
-
-
 }

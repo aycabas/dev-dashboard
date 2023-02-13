@@ -33,8 +33,14 @@ export class DevOps extends Widget<IWorkItemState> {
     }
 
     protected async getData(): Promise<IWorkItemState> {
+        let devOpsData: DevOpsModel[] = [];
+        try {
+            devOpsData = await DevOpsWorkItems();
+        } catch (e) {
+            console.log("Get Devops Data Error: ", e)
+        }        
         return {
-            devOpsData: await DevOpsWorkItems(),
+            devOpsData: devOpsData,
             inputFocused: false,
         };
     }

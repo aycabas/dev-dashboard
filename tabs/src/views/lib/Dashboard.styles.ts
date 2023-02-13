@@ -39,3 +39,20 @@ export const oneColumn = (heights?: string, width?: string): CSSProperties => {
       ...templateRows,
   };
 };
+
+export const OneRow = (heights?: string, width?: string): CSSProperties => {
+  if (width) {
+    return {
+      display: "grid",
+      gap: "20px",
+      gridTemplateColumns: width ?? "1fr",
+      gridAutoRows: heights ?? "1fr",
+    };
+  } else {
+    return {
+      display: "grid",
+      gap: "20px",
+      gridAutoRows: heights ?? "1fr",
+    };
+  }
+};

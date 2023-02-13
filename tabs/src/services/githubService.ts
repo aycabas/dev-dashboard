@@ -5,7 +5,7 @@ export async function getIssues(): Promise<githubIssuesModel[]> {
 
     const octokit = new Octokit({
         //github personal access token
-        auth: ''
+        auth: 'GITHUB-PERSONAL-ACCESS-TOKEN'
 
     })
 
