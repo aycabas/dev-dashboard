@@ -1,7 +1,8 @@
 import "../styles/PlannerTask.css";
 
-import React, { CSSProperties } from "react";
+import React from "react";
 
+import { mergeStyles } from "@fluentui/react";
 import { Button, Checkbox, Image, Spinner, Text } from "@fluentui/react-components";
 import {
     Add20Filled,
@@ -17,8 +18,6 @@ import { addTask, getTasks } from "../../services/plannerService";
 import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
 import { widgetStyle } from "../lib/Widget.styles";
-import { emptyLayout, emptyTextStyle, widgetPaddingStyle } from "../styles/Common.styles";
-import { mergeStyles } from "@fluentui/react";
 
 interface ITaskState {
     tasks?: TaskModel[];
@@ -108,9 +107,9 @@ export class PlannerTask extends Widget<ITaskState> {
                         );
                     })
                 ) : (
-                    <div style={emptyLayout}>
+                    <div className="empty-layout">
                         <EmptyThemeImg key="img-empty" />
-                        <Text key="text-empty" weight="semibold" style={emptyTextStyle}>
+                        <Text key="text-empty" weight="semibold" className="empty-text">
                             Once you have a task, you'll find it here
                         </Text>
                     </div>
@@ -193,8 +192,8 @@ export class PlannerTask extends Widget<ITaskState> {
         );
     }
 
-    customiseWidgetStyle(): CSSProperties | undefined {
-        return widgetPaddingStyle;
+    protected stylingWidget(): string | React.CSSProperties {
+        return "";
     }
 
     async componentDidMount() {

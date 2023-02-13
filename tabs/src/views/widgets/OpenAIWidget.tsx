@@ -2,10 +2,12 @@ import "../styles/OpenAI.css";
 import "../styles/Common.css";
 
 import React from "react";
+import SyntaxHighlighter from "react-syntax-highlighter";
 
 import { Button, Image, Text } from "@fluentui/react-components";
 import {
     CodeTextEdit20Filled,
+    Copy24Regular,
     DismissCircle24Regular,
     MoreHorizontal32Regular,
     Send24Regular,
@@ -89,7 +91,7 @@ export class OpenAI extends Widget<IOpenAIState> {
                 {hasAnswer ? (
                     <div className="answer-layout">
                         {this.state.answer?.map((item: openAIModel) => {
-                            return item.isCode ? <code><pre>{item.text}</pre></code> : <pre>{item.text}</pre>;
+                            return item.isCode ? this.codeBlock(item.text) : <pre>{item.text}</pre>;
                         })}
                     </div>
                 ) : (
@@ -100,6 +102,22 @@ export class OpenAI extends Widget<IOpenAIState> {
             </div>
         );
     }
+
+    private codeBlock = (text?: string): JSX.Element => {
+        return (
+            <div className="code-block">
+                <Button
+                    key="btn-copy"
+                    className="btn-copy"
+                    appearance="transparent"
+                    icon={<Copy24Regular />}
+                >
+                    Copy
+                </Button>
+                <SyntaxHighlighter>{text!}</SyntaxHighlighter>
+            </div>
+        );
+    };
 
     protected stylingWidget(): string | React.CSSProperties {
         return "open-ai-widget";

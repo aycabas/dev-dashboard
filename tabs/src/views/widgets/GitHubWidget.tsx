@@ -9,15 +9,13 @@ import {
     MoreHorizontal32Regular,
     Open16Regular,
 } from "@fluentui/react-icons";
-import { GitHubLogoIcon, LadybugSolidIcon } from "@fluentui/react-icons-mdl2";
+import { GitHubLogoIcon } from "@fluentui/react-icons-mdl2";
 
-import { TeamsFxContext } from "../../internal/context";
 import { githubIssuesModel } from "../../models/githubIssuesModel";
 import { createIssue, getIssues } from "../../services/githubService";
 import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
 import { widgetStyle } from "../lib/Widget.styles";
-import { emptyLayout, emptyTextStyle } from "../styles/Common.styles";
 import { mergeStyles } from "@fluentui/react";
 
 interface IIssueState {
@@ -82,7 +80,10 @@ export class GithubIssues extends Widget<IIssueState> {
                                 }
                             >
                                 <Image src="issue.svg" className="img-issue" />
-                                <div className="issue-content-layout">
+                                <div
+                                    className="issue-content-layout"
+                                    onClick={() => window.open(item.url, "_blank")}
+                                >
                                     <Text key={`cb-issue-${item.title}`} className="issue-title">
                                         [{item.state}] {item.title}
                                     </Text>
@@ -106,9 +107,9 @@ export class GithubIssues extends Widget<IIssueState> {
                         );
                     })
                 ) : (
-                    <div style={emptyLayout}>
+                    <div className="empty-layout">
                         <EmptyThemeImg key="img-empty" />
-                        <Text key="text-empty" weight="semibold" style={emptyTextStyle}>
+                        <Text key="text-empty" weight="semibold" className="empty-text">
                             Once you have a issue, you'll find it here
                         </Text>
                     </div>
@@ -146,8 +147,8 @@ export class GithubIssues extends Widget<IIssueState> {
             <div
                 ref={this.inputDivRef}
                 className={mergeStyles(
-                    "add-issue-layout",
-                    this.state.inputFocused ? "issue-input-focused" : "issue-input-unfocused"
+                    "div-issue-add-layout",
+                    this.state.inputFocused ? "div-issue-add-focused" : "div-issue-add-unfocused"
                 )}
             >
                 {!this.state.inputFocused && <Add20Filled className="issue-add-icon" />}
@@ -155,7 +156,9 @@ export class GithubIssues extends Widget<IIssueState> {
                 <input
                     ref={this.inputRef}
                     type="text"
-                    className="issue-input"
+                    className={
+                        this.state.inputFocused ? "input-issue-focused" : "input-issue-unfocused"
+                    }
                     onFocus={() => this.inputFocusedState()}
                     placeholder="Create new"
                 />

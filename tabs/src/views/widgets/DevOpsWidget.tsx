@@ -88,48 +88,50 @@ export class DevOps extends Widget<IWorkItemState> {
                                 State
                             </Text>
                         </div>
-                        {this.state.devOpsData?.map((item: DevOpsModel, index) => {
-                            return (
-                                <>
-                                    {index !== 0 && (
-                                        <div
-                                            key={`div-items-divider-${index}`}
-                                            className="divider"
-                                        />
-                                    )}
-                                    <div key={`div-item-${index}`} className="work-items-layout">
-                                        <Text key={`text-item-title-${index}`}>
-                                            {item.fields.title}
-                                        </Text>
-                                        <Text key={`text-item-type-${index}`}>
-                                            {item.fields.workItemType}
-                                        </Text>
-                                        <div
-                                            key={`div-item-assigned-${item.id}`}
-                                            className="work-items-assigned-state-layout"
-                                        >
-                                            <Avatar
-                                                key={`avatar-item-assigned-${item.id}`}
-                                                name={item.fields.assigendTo?.displayName}
-                                                image={{
-                                                    src: `${item.fields.assigendTo?.links?.avatar?.href}`,
-                                                }}
-                                                size={16}
+                        <div className="work-items">
+                            {this.state.devOpsData?.map((item: DevOpsModel, index) => {
+                                return (
+                                    <>
+                                        {index !== 0 && (
+                                            <div
+                                                key={`div-items-divider-${index}`}
+                                                className="divider"
                                             />
-                                            <Text key={`text-item-assigned-${item.id}`}>
-                                                {item.fields.assigendTo?.displayName}
+                                        )}
+                                        <div key={`div-item-${index}`} className="work-item-layout">
+                                            <Text key={`text-item-title-${index}`}>
+                                                {item.fields.title}
                                             </Text>
-                                        </div>
-                                        <div className="work-items-assigned-state-layout">
-                                            <CircleSmall20Filled className="state-icon"/>
-                                            <Text key={`text-item-state-${index}`}>
-                                                {item.fields.state}
+                                            <Text key={`text-item-type-${index}`}>
+                                                {item.fields.workItemType}
                                             </Text>
+                                            <div
+                                                key={`div-item-assigned-${item.id}`}
+                                                className="work-items-assigned-state-layout"
+                                            >
+                                                <Avatar
+                                                    key={`avatar-item-assigned-${item.id}`}
+                                                    name={item.fields.assigendTo?.displayName}
+                                                    image={{
+                                                        src: `${item.fields.assigendTo?.links?.avatar?.href}`,
+                                                    }}
+                                                    size={16}
+                                                />
+                                                <Text key={`text-item-assigned-${item.id}`}>
+                                                    {item.fields.assigendTo?.displayName}
+                                                </Text>
+                                            </div>
+                                            <div className="work-item-assigned-state-layout">
+                                                <CircleSmall20Filled className="state-icon" />
+                                                <Text key={`text-item-state-${index}`}>
+                                                    {item.fields.state}
+                                                </Text>
+                                            </div>
                                         </div>
-                                    </div>
-                                </>
-                            );
-                        })}
+                                    </>
+                                );
+                            })}
+                        </div>
                     </div>
                 ) : (
                     <div className="empty-layout">

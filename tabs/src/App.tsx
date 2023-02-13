@@ -7,7 +7,6 @@ import {
   teamsLightTheme,
   teamsDarkTheme,
   teamsHighContrastTheme,
-  tokens,
 } from "@fluentui/react-components";
 import { useTeamsUserCredential } from "@microsoft/teamsfx-react";
 
