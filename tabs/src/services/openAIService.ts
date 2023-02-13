@@ -15,16 +15,11 @@ export async function askOpenAI(prompt: string): Promise<openAIModel[]> {
             prompt: prompt,
             max_tokens: 300,
             temperature: 0,
-            top_p: 1
+            top_p: 1,
         });
         const result: openAIModel[] = [];
         for (const obj of response.data.choices) {
-            const tmp: openAIModel = {
-                text: obj["text"],
-            };
-
-            result.push(tmp);
-
+            result.push(...splitText(obj["text"]!));
         }
 
         return result;
@@ -33,3 +28,30 @@ export async function askOpenAI(prompt: string): Promise<openAIModel[]> {
     }
 }
 
+function splitText(text: string): openAIModel[] {
+    const result: openAIModel[] = [];
+    let index = 0;
+    while (index < text.length) {
+        // split <code></code> from text in cycles
+        const codeStart = text.indexOf("<code>", index);
+        const codeEnd = text.indexOf("</code>", index);
+        if (codeStart === -1 || codeEnd === -1) {
+            // no more code blocks
+            break;
+        }
+        const textModel: openAIModel = {
+            text: text.substring(index, codeStart),
+            isCode: false,
+        };
+        result.push(textModel);
+
+        const code = text.substring(codeStart + 6, codeEnd);
+        const codeModel: openAIModel = {
+            text: code,
+            isCode: true,
+        };
+        result.push(codeModel);
+        index = codeEnd + 7;
+    }
+    return result;
+}

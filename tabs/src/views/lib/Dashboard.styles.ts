@@ -30,20 +30,14 @@ export const dashboardStyles = (
  * @returns The styles for the column.
  */
 export const oneColumn = (heights?: string, width?: string): CSSProperties => {
-  if (heights) {
-    return {
+  const templateRows: CSSProperties = heights ? { gridTemplateRows: heights ?? "1fr" } : {};
+  return {
       display: "grid",
       gap: "20px",
       gridTemplateRows: heights ?? "1fr",
       gridAutoColumns: width ?? "1fr",
-    };
-  } else {
-    return {
-      display: "grid",
-      gap: "20px",
-      gridAutoColumns: width ?? "1fr",
-    };
-  }
+      ...templateRows,
+  };
 };
 
 export const OneRow = (heights?: string, width?: string): CSSProperties => {

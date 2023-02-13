@@ -1,24 +1,23 @@
 export interface DevOpsModel {
-    id?: string,
-    url?: string
-    fields: DevOpsFieldsModel
+    id?: string;
+    url?: string;
+    fields: DevOpsFieldsModel;
 }
 
 export interface DevOpsFieldsModel {
-    title?: string,
-    workItemType?: string
-    createdBy?: DevOpsFieldsCreatedByModel
+    title?: string;
+    workItemType?: string;
+    assigendTo?: DevOpsFieldsAssignedToModel;
+    state?: string;
 }
 
-
-export interface DevOpsFieldsCreatedByModel {
-    displayName?: string,
-    links?: DevOpsFieldsCreatedByAvatarModel
-
+export interface DevOpsFieldsAssignedToModel {
+    displayName?: string;
+    links?: DevOpsFieldsAssignedToAvatarModel;
 }
-export interface DevOpsFieldsCreatedByAvatarModel {
-    avatar?: DevOpsFieldsCreatedByAvatarHrefModel
+export interface DevOpsFieldsAssignedToAvatarModel {
+    avatar?: DevOpsFieldsAssignedToAvatarHrefModel;
 }
-export interface DevOpsFieldsCreatedByAvatarHrefModel {
-    href?: string
+export interface DevOpsFieldsAssignedToAvatarHrefModel {
+    href?: string;
 }

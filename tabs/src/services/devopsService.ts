@@ -1,21 +1,21 @@
-
 import { DevOpsModel } from "../models/devOpsModel";
 export async function DevOpsWorkItems(): Promise<DevOpsModel[]> {
-
-
     try {
-
         let devopsItems: DevOpsModel[] = [];
-        const req = await fetch('https://dev.azure.com/DemoContosoOrg/ContosoProject/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8;',
-                'Authorization': "Basic " + btoa('Basic' + ":" + 'DEVOPS-PERSONAL-ACCESS-TOKEN')
-            },
-        }).then((response) => response.json())
-            .then(req => {
+        const req = await fetch(
+            "https://dev.azure.com/DemoContosoOrg/ContosoProject/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0",
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8;",
+                    Authorization: "Basic " + btoa("Basic" + ":" + "DEVOPS-PERSONAL-ACCESS-TOKEN"),
+                },
+            }
+        )
+            .then((response) => response.json())
+            .then((req) => {
                 return req;
-            })
+            });
 
         //var value = JSON.parse(req);
 
@@ -25,32 +25,33 @@ export async function DevOpsWorkItems(): Promise<DevOpsModel[]> {
             const tmp: DevOpsModel = {
                 id: obj["id"],
                 url: obj["url"],
-                fields:
-                {
+                fields: {
                     title: obj["fields"]["System.Title"],
                     workItemType: obj["fields"]["System.WorkItemType"],
-                    createdBy: {
-                        displayName: obj["fields"]["System.CreatedBy"]["displayName"],
+                    assigendTo: {
+                        displayName:
+                            obj["fields"]["System.AssignedTo"] !== undefined
+                                ? obj["fields"]["System.AssignedTo"]["displayName"]
+                                : "",
                         links: {
-                            avatar:
-                            {
-                                href: obj["fields"]["System.CreatedBy"]["_links"]["avatar"]["href"]
-                            }
-                        }
-                    }
-                }
+                            avatar: {
+                                href:
+                                    obj["fields"]["System.AssignedTo"] !== undefined
+                                        ? obj["fields"]["System.AssignedTo"]["_links"]["avatar"][
+                                              "href"
+                                          ]
+                                        : "",
+                            },
+                        },
+                    },
+                    state: obj["fields"]["System.State"],
+                },
             };
 
-
             devopsItems.push(tmp);
-
         }
         return devopsItems;
-
     } catch (e) {
         throw e;
     }
-
-
 }
-

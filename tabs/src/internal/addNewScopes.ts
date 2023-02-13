@@ -1,11 +1,12 @@
-import { loginAction } from "./login";
-import { FxContext } from "./singletonContext";
 import { ErrorWithCode } from "@microsoft/teamsfx";
 
+import { loginAction } from "./login";
+import { TeamsUserCredentialContext } from "./singletonContext";
+
 export async function addNewScope(addscopes: string[]) {
-    let teamsfx = FxContext.getInstance().getTeamsFx();
+    let credential = TeamsUserCredentialContext.getInstance().getCredential();
     try {
-        await teamsfx.getCredential().getToken(addscopes);
+        await credential.getToken(addscopes);
     } catch (e) {
         try {
             if (e instanceof ErrorWithCode) await loginAction(addscopes);

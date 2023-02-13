@@ -1,39 +1,30 @@
-import React, { CSSProperties } from "react";
+import "../styles/OpenAI.css";
+import "../styles/Common.css";
 
-import { Button, Text } from "@fluentui/react-components";
+import React from "react";
+import SyntaxHighlighter from "react-syntax-highlighter";
+
+import { Button, Image, Spinner, Text } from "@fluentui/react-components";
 import {
-
     CodeTextEdit20Filled,
+    Copy24Regular,
+    DismissCircle24Regular,
     MoreHorizontal32Regular,
-    Search12Regular,
-    Search24Filled
+    Send24Regular,
 } from "@fluentui/react-icons";
 
-import { TeamsFxContext } from "../../internal/context";
 import { openAIModel } from "../../models/openAIModel";
 import { askOpenAI } from "../../services/openAIService";
-import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
-import { headerContentStyle, headerTextStyle } from "../lib/Widget.styles";
-import { emptyLayout, emptyTextStyle, widgetPaddingStyle } from "../styles/Common.styles";
-import {
-    addBtnStyle,
-    addTaskBtnStyle,
-    addTaskContainer,
-    bodyLayout,
-    existingTaskLayout,
-    inputCodeStyle,
-} from "../styles/OpenAI.styles";
+import { widgetStyle } from "../lib/Widget.styles";
 
-
-interface ITaskState {
-    tasks?: openAIModel[];
-    loading: boolean;
+interface IOpenAIState {
+    answer?: openAIModel[];
     inputFocused?: boolean;
-    addBtnOver?: boolean;
+    onRequest?: boolean;
 }
 
-export class OpenAI extends Widget<ITaskState> {
+export class OpenAI extends Widget<IOpenAIState> {
     inputDivRef;
     btnRef;
     inputRef;
@@ -46,112 +37,97 @@ export class OpenAI extends Widget<ITaskState> {
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
 
-    async getData(): Promise<ITaskState> {
+    protected async getData(): Promise<IOpenAIState> {
         return {
-            // tasks: await getOpenAIResponse(),
             inputFocused: false,
-            addBtnOver: false,
-            loading: false,
+            onRequest: false,
         };
     }
 
-    headerContent(): JSX.Element | undefined {
+    protected headerContent(): JSX.Element | undefined {
         return (
-            <div style={headerContentStyle}>
+            <div className={widgetStyle.headerContent}>
                 <CodeTextEdit20Filled />
-                <Text key="text-task-title" style={headerTextStyle}>
+                <Text key="text-task-title" className={widgetStyle.headerText}>
                     Open AI Code Helper
                 </Text>
-                <Button key="bt-task-more" icon={<MoreHorizontal32Regular />} appearance="transparent" />
+                <Button
+                    key="bt-task-more"
+                    icon={<MoreHorizontal32Regular />}
+                    appearance="transparent"
+                />
             </div>
         );
     }
 
-    bodyContent(): JSX.Element | undefined {
-        const loading: boolean = !this.state.data || (this.state.data.loading ?? true);
-        const hasTask = this.state.data?.tasks?.length !== 0;
-
+    protected bodyContent(): JSX.Element | undefined {
+        const hasAnswer = this.state.answer !== undefined;
         return (
-            <div style={bodyLayout(hasTask)}>
-                <TeamsFxContext.Consumer>
-                    {({ themeString }) => this.inputLayout(themeString)}
-                </TeamsFxContext.Consumer>
-
-                {loading ? (
-                    <></>
-                ) : hasTask ? (
-                    this.state.data?.tasks?.map((item: openAIModel) => {
-
-
-                        return (
-
-                            <TeamsFxContext.Consumer key={`consumer-task-${item.text}`}>
-                                {({ themeString }) => (
-
-                                    <div key={`div-task-${item.text}`} style={existingTaskLayout(themeString)}>
-                                        {item.text}
-                                    </div>
-                                )}
-                            </TeamsFxContext.Consumer>
-                        );
-                    })
+            <div className="ai-layout">
+                <div ref={this.inputDivRef} className="question-input-layout">
+                    <div className="question-input-content">
+                        <input
+                            ref={this.inputRef}
+                            type="text"
+                            className="question-input"
+                            onFocus={() => this.inputFocusedState()}
+                            placeholder="Ask your questions to Code Helper"
+                            disabled={this.state.onRequest === true ? true : false}
+                        />
+                        {this.state.inputFocused && (
+                            <Button
+                                key={`bt-question-clear`}
+                                className="question-clear-btn"
+                                icon={<DismissCircle24Regular />}
+                                onClick={() => this.clearQuestion()}
+                                appearance="transparent"
+                            />
+                        )}
+                    </div>
+                    {this.state.onRequest === true ? (
+                        <Spinner size="tiny" />
+                    ) : (
+                        <Button
+                            key={`bt-question-send`}
+                            icon={<Send24Regular />}
+                            onClick={() => this.onSendButtonClick()}
+                            appearance="transparent"
+                        />
+                    )}
+                </div>
+                {hasAnswer ? (
+                    <div className="answer-layout">
+                        {this.state.answer?.map((item: openAIModel) => {
+                            return item.isCode ? this.codeBlock(item.text) : <pre>{item.text}</pre>;
+                        })}
+                    </div>
                 ) : (
-                    <div style={emptyLayout}>
-                        <EmptyThemeImg key="img-empty" />
-                        <Text key="text-empty" weight="semibold" style={emptyTextStyle}>
-                            Open AI Code Helper will answer your questions here
-                        </Text>
+                    <div className="empty-layout">
+                        <Image src="open-ai-empty.svg" className="empty-img" />
                     </div>
                 )}
             </div>
         );
     }
 
-
-
-    private inputLayout(themeString: string): JSX.Element | undefined {
+    private codeBlock = (text?: string): JSX.Element => {
         return (
-            <div
-                ref={this.inputDivRef}
-                style={addTaskContainer(themeString, this.state.data?.inputFocused)}
-            >
-                {this.state.data?.inputFocused ? (
-                    <Search12Regular style={addBtnStyle} />
-                ) : (
-                    <Search24Filled style={addBtnStyle} />
-                )}
-
-                <input
-                    ref={this.inputRef}
-                    type="text"
-                    style={inputCodeStyle(this.state.data?.inputFocused)}
-                    onFocus={() => this.inputFocusedState()}
-                    placeholder="Ask your questions to Code Helper"
-                />
-
-                {this.state.data?.inputFocused && (
-                    <button
-                        style={addTaskBtnStyle(this.state.data?.addBtnOver)}
-                        onClick={() => {
-
-                            this.onAddButtonClick();
-
-                        }}
-                        onMouseEnter={() => this.mouseEnterState()}
-                        onMouseLeave={() => this.mouseLeaveState()}
-                    >
-                        Ask
-                    </button>
-
-                )}
-
-
+            <div className="code-block">
+                <Button
+                    key="btn-copy"
+                    className="btn-copy"
+                    appearance="transparent"
+                    icon={<Copy24Regular />}
+                >
+                    Copy
+                </Button>
+                <SyntaxHighlighter>{text!}</SyntaxHighlighter>
             </div>
         );
-    }
+    };
 
-    customiseWidgetStyle(): CSSProperties | undefined {
-        return widgetPaddingStyle;
+    protected stylingWidget(): string | React.CSSProperties {
+        return "open-ai-widget";
     }
 
     async componentDidMount() {
@@ -166,62 +142,38 @@ export class OpenAI extends Widget<ITaskState> {
     private handleClickOutside(event: any) {
         if (!this.inputDivRef.current?.contains(event.target)) {
             this.setState({
-                data: {
-                    tasks: this.state.data?.tasks,
-                    inputFocused: false,
-                    addBtnOver: this.state.data?.addBtnOver,
-                    loading: false,
-                },
+                answer: this.state.answer,
+                inputFocused: false,
             });
+            this.clearQuestion();
         }
     }
 
-    private onAddButtonClick = async () => {
+    private onSendButtonClick = async () => {
         if (this.inputRef.current && this.inputRef.current.value.length > 0) {
-            const tasks: openAIModel[] = await askOpenAI(this.inputRef.current.value);
+            this.setState({ onRequest: true, inputFocused: false, answer: undefined });
+            const answer: openAIModel[] = await askOpenAI(this.inputRef.current.value);
             this.setState({
-                data: {
-                    tasks: tasks,
-                    inputFocused: false,
-                    addBtnOver: false,
-                    loading: false,
-                },
+                answer: answer,
+                inputFocused: false,
+                onRequest: false,
             });
-            this.inputRef.current.value = "";
-
+            this.clearQuestion();
         }
     };
 
+    private clearQuestion() {
+        if (this.inputRef.current) {
+            this.inputRef.current.value = "";
+        }
+        this.setState({
+            inputFocused: false,
+        });
+    }
+
     private inputFocusedState = () => {
         this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: true,
-                addBtnOver: this.state.data?.addBtnOver,
-                loading: false,
-            },
-        });
-    };
-
-    private mouseEnterState = () => {
-        this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: this.state.data?.inputFocused,
-                addBtnOver: true,
-                loading: false,
-            },
-        });
-    };
-
-    private mouseLeaveState = () => {
-        this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: this.state.data?.inputFocused,
-                addBtnOver: false,
-                loading: false,
-            },
+            inputFocused: true,
         });
     };
 }

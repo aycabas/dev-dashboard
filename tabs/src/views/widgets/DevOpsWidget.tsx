@@ -1,176 +1,211 @@
-import * as d3 from "d3-format";
+import "../styles/DevOps.css";
 
-import { AreaChart, IChartProps } from "@fluentui/react-charting";
-import { Avatar, Button, Text, ToggleButton, tokens } from "@fluentui/react-components";
+import React from "react";
+
+import { Avatar, Button, Image, Spinner, Text } from "@fluentui/react-components";
 import {
-    ArrowMaximize20Regular,
     ArrowRight16Filled,
-    ChevronRight20Regular,
-    MoreHorizontal16Filled,
+    CircleSmall20Filled,
     MoreHorizontal32Regular,
-    Rocket20Regular,
-    Search20Regular,
-    Settings20Regular,
-    Trophy20Regular,
 } from "@fluentui/react-icons";
 
-import { DayRange, DayRangeModel } from "../../models/dayRangeModel";
 import { DevOpsModel } from "../../models/devOpsModel";
 import { DevOpsWorkItems } from "../../services/devopsService";
-import ProgressBar from "../components/Progress";
 import { Widget } from "../lib/Widget";
-import { footerBtnStyle, headerStyleWithoutIcon } from "../lib/Widget.styles";
-import {
-    actionLayout,
-    areaChartLayout,
-    areaChartStyle,
-    avatarStyle,
-    backlogLayout,
-    backlogStyle,
-    bodyLayout,
-    divider,
-    legendBoldStyle,
-    legendDividerStyle,
-    legendItemLayout,
-    legendLayout,
-    legendNormalStyle,
-    minWidthStyle,
-    stateLayout,
-    stateStyle,
-    tableColumnStyle,
-    tableContentLayout,
-    tableHeaderStyle,
-    tableLayout,
-    timeSpanLayout,
-    timeSpanStyle,
-    titleStyle,
-} from "../styles/Chart.style";
-import { CSSProperties } from "react";
-import { widgetPaddingStyle } from "../styles/Common.styles";
+import { widgetStyle } from "../lib/Widget.styles";
+import { TeamsFxContext } from "../../internal/context";
 
-interface IChartWidgetState {
-    dayRange: DayRange;
-
+interface IWorkItemState {
     devOpsData?: DevOpsModel[];
+    inputFocused?: boolean;
+    addBtnOver?: boolean;
 }
 
-export class DevOps extends Widget<IChartWidgetState> {
-    async getData(): Promise<IChartWidgetState> {
+export class DevOps extends Widget<IWorkItemState> {
+    inputDivRef;
+    inputRef;
 
+    constructor(props: any) {
+        super(props);
+        this.inputRef = React.createRef<HTMLInputElement>();
+        this.inputDivRef = React.createRef<HTMLDivElement>();
+        this.handleClickOutside = this.handleClickOutside.bind(this);
+    }
 
-
+    protected async getData(): Promise<IWorkItemState> {
+        let devOpsData: DevOpsModel[] = [];
+        try {
+            devOpsData = await DevOpsWorkItems();
+        } catch (e) {
+            console.log("Get Devops Data Error: ", e)
+        }        
         return {
-            dayRange: DayRange.Seven,
-            devOpsData: await DevOpsWorkItems(),
+            devOpsData: devOpsData,
+            inputFocused: false,
         };
     }
 
-    headerContent(): JSX.Element | undefined {
+    protected headerContent(): JSX.Element | undefined {
         return (
-            <div key="div-chart-header" style={headerStyleWithoutIcon}>
-                <Text key="text-chart-title" style={areaChartStyle}>
-                    Area chart
+            <div className={widgetStyle.headerContent}>
+                <TeamsFxContext.Consumer>
+                    {({ themeString }) =>
+                        themeString === "default" ? (
+                            <Image
+                                key="icon-devops-default"
+                                width="20px"
+                                src="devops-default.svg"
+                            />
+                        ) : (
+                            <Image key="icon-devops-dark" width="20px" src="devops-dark.svg" />
+                        )
+                    }
+                </TeamsFxContext.Consumer>
+                <Text key="text-task-title" className={widgetStyle.headerText}>
+                    Features backlog
                 </Text>
-                <div key="div-chart-actions" style={actionLayout}>
-                    <Button key="bt-chart-search" icon={<Search20Regular />} appearance="transparent" />
-                    <Button key="bt-chart-max" icon={<ArrowMaximize20Regular />} appearance="transparent" />
-                    <Button key="bt-chart-setting" icon={<Settings20Regular />} appearance="transparent" />
-                    <Button key="bt-chart-more" icon={<MoreHorizontal32Regular />} appearance="transparent" />
-                </div>
+                <Button
+                    key="bt-task-more"
+                    icon={<MoreHorizontal32Regular />}
+                    appearance="transparent"
+                />
             </div>
         );
     }
 
-    bodyContent(): JSX.Element | undefined {
+    protected bodyContent(): JSX.Element | undefined {
+        const hasWorkItem =
+            this.state.devOpsData !== undefined && this.state.devOpsData?.length !== 0;
         return (
-            <div key="div-chart-body" style={bodyLayout}>
-
-
-                <div key="div-table-layout" style={tableLayout}>
-                    <div key="div-back-log" style={backlogLayout}>
-                        <Text key="text-back-log" style={backlogStyle}>
-                            Features backlog (57)
-                        </Text>
-                        <Button
-                            key="bt-back-log-more"
-                            icon={<MoreHorizontal16Filled />}
-                            appearance="transparent"
-                        />
-                    </div>
-
-                    <div key="div-table-content" style={tableContentLayout}>
-                        <div key="div-table-column" style={tableColumnStyle}>
-                            <Text
-                                key="text-table-header-title"
-                                style={{ ...minWidthStyle(8), ...tableHeaderStyle }}
-                            >
+            <div className="devops-body-layout">
+                {hasWorkItem ? (
+                    <div className="devops-list-layout">
+                        <div className="work-items-table-title-layout">
+                            <Text key="text-work-item-title" className="work-items-table-title">
                                 Title
                             </Text>
-                            <Text
-                                key="text-table-header-assigned"
-                                style={{ ...minWidthStyle(18), ...tableHeaderStyle }}
-                            >
-                                Created by
+                            <Text key="text-work-item-type" className="work-items-table-title">
+                                Type
                             </Text>
-
-
+                            <Text key="text-work-item-assigned" className="work-items-table-title">
+                                Assigned To
+                            </Text>
+                            <Text key="text-work-item-state" className="work-items-table-title">
+                                State
+                            </Text>
                         </div>
-                        {this.state.data?.devOpsData?.map((item: DevOpsModel, index) => {
-                            return (
-                                <>
-                                    {index !== 0 && <div key={`table-divider-${item.id}`} style={divider} />}
-                                    <div key={`div-table-column-${item.id}`} style={tableColumnStyle}>
-                                        <div key={`div-table-title-${item.id}`} style={titleStyle}>
-                                            <ChevronRight20Regular key={`icon-chevron-${item.id}`} />
-                                            {index !== 3 ? (
-                                                <Rocket20Regular key={`icon-rocket-${item.id}`} />
-                                            ) : (
-                                                <Trophy20Regular key={`icon-trophy-${item.id}`} />
-                                            )}
-                                            <Text key={`text-title-${item.id}`} wrap={false}>
-                                                {item.fields.workItemType}: {item.fields.title}
-                                            </Text>
-                                        </div>
-
-                                        <div key={`div-table-avatar-${item.id}`} style={avatarStyle}>
-                                            <Avatar
-                                                key={`avatar-assigned-${item.id}`}
-                                                name={item.fields.createdBy?.displayName}
-                                                image={{ src: `${item.fields.createdBy?.links?.avatar}` }}
-                                                size={16}
+                        <div className="work-items">
+                            {this.state.devOpsData?.map((item: DevOpsModel, index) => {
+                                return (
+                                    <>
+                                        {index !== 0 && (
+                                            <div
+                                                key={`div-items-divider-${index}`}
+                                                className="divider"
                                             />
-                                            <Text key={`text-assigned-${item.id}`}>{item.fields.createdBy?.displayName}</Text>
+                                        )}
+                                        <div key={`div-item-${index}`} className="work-item-layout">
+                                            <Text key={`text-item-title-${index}`}>
+                                                {item.fields.title}
+                                            </Text>
+                                            <Text key={`text-item-type-${index}`}>
+                                                {item.fields.workItemType}
+                                            </Text>
+                                            <div
+                                                key={`div-item-assigned-${item.id}`}
+                                                className="work-items-assigned-state-layout"
+                                            >
+                                                <Avatar
+                                                    key={`avatar-item-assigned-${item.id}`}
+                                                    name={item.fields.assigendTo?.displayName}
+                                                    image={{
+                                                        src: `${item.fields.assigendTo?.links?.avatar?.href}`,
+                                                    }}
+                                                    size={16}
+                                                />
+                                                <Text key={`text-item-assigned-${item.id}`}>
+                                                    {item.fields.assigendTo?.displayName}
+                                                </Text>
+                                            </div>
+                                            <div className="work-item-assigned-state-layout">
+                                                <CircleSmall20Filled className="state-icon" />
+                                                <Text key={`text-item-state-${index}`}>
+                                                    {item.fields.state}
+                                                </Text>
+                                            </div>
                                         </div>
-
-
-                                    </div>
-                                </>
-                            );
-                        })}
+                                    </>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="empty-layout">
+                        <Image src="open-ai-empty.svg" className="empty-img" />
+                    </div>
+                )}
             </div>
         );
     }
 
-    footerContent(): JSX.Element | undefined {
+    protected footerContent(): JSX.Element | undefined {
+        if (!this.state.loading && this.state.devOpsData?.length !== 0) {
+            return (
+                <Button
+                    appearance="transparent"
+                    icon={<ArrowRight16Filled />}
+                    iconPosition="after"
+                    size="small"
+                    className={widgetStyle.footerBtn}
+                    onClick={() => {}} // navigate to detailed page
+                >
+                    View query
+                </Button>
+            );
+        } else {
+            return undefined;
+        }
+    }
+
+    protected loadingContent(): JSX.Element | undefined {
         return (
-            <Button
-                key="bt-chart-footer"
-                appearance="transparent"
-                icon={<ArrowRight16Filled />}
-                iconPosition="after"
-                size="small"
-                style={footerBtnStyle}
-                onClick={() => { }} // navigate to detailed page
-            >
-                View query
-            </Button>
+            <div style={{ display: "grid" }}>
+                <Spinner label="Loading..." labelPosition="below" />
+            </div>
         );
     }
 
-    customiseWidgetStyle(): CSSProperties | undefined {
-        return widgetPaddingStyle;
+    async componentDidMount() {
+        super.componentDidMount();
+        document.addEventListener("mousedown", this.handleClickOutside);
     }
 
+    componentWillUnmount(): void {
+        document.removeEventListener("mousedown", this.handleClickOutside);
+    }
+
+    private handleClickOutside(event: any) {
+        if (!this.inputDivRef.current?.contains(event.target)) {
+            this.setState({
+                inputFocused: false,
+            });
+        }
+    }
+
+    private onSearchBtnClick = async () => {
+        if (this.inputRef.current && this.inputRef.current.value.length > 0) {
+            const devOpsData: DevOpsModel[] = [];
+            this.setState({
+                devOpsData: devOpsData,
+                inputFocused: false,
+            });
+            this.inputRef.current.value = "";
+        }
+    };
+
+    private inputFocusedState = () => {
+        this.setState({
+            inputFocused: true,
+        });
+    };
 }

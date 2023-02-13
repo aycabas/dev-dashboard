@@ -1,42 +1,31 @@
-import React, { CSSProperties } from "react";
+import "../styles/GitHub.css";
 
-import { Button, Checkbox, Image, Text, Label } from "@fluentui/react-components";
+import React from "react";
+
+import { Button, Image, Text } from "@fluentui/react-components";
 import {
     Add20Filled,
     ArrowRight16Filled,
-    Circle20Regular,
     MoreHorizontal32Regular,
-    Star24Regular,
-    Open16Filled,
-    ChevronRight20Regular,
-    Bug16Regular
+    Open16Regular,
 } from "@fluentui/react-icons";
-import { GitHubLogoIcon, LadybugSolidIcon } from "@fluentui/react-icons-mdl2";
-import { TeamsFxContext } from "../../internal/context";
+import { GitHubLogoIcon } from "@fluentui/react-icons-mdl2";
+
 import { githubIssuesModel } from "../../models/githubIssuesModel";
-import { getIssues, createIssue } from "../../services/githubService";
+import { createIssue, getIssues } from "../../services/githubService";
 import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
-import { footerBtnStyle, headerContentStyle, headerTextStyle } from "../lib/Widget.styles";
-import { emptyLayout, emptyTextStyle, widgetPaddingStyle } from "../styles/Common.styles";
-import {
-    addBtnStyle,
-    addTaskBtnStyle,
-    addTaskContainer,
-    bodyLayout,
-    existingTaskLayout,
-    inputStyle,
-    descriptionStyle,
-} from "../styles/GitHub.styles";
+import { widgetStyle } from "../lib/Widget.styles";
+import { mergeStyles } from "@fluentui/react";
 
-interface ITaskState {
-    tasks?: githubIssuesModel[];
+interface IIssueState {
+    issues?: githubIssuesModel[];
     loading: boolean;
     inputFocused?: boolean;
     addBtnOver?: boolean;
 }
 
-export class GithubIssues extends Widget<ITaskState> {
+export class GithubIssues extends Widget<IIssueState> {
     inputDivRef;
     btnRef;
     inputRef;
@@ -49,9 +38,9 @@ export class GithubIssues extends Widget<ITaskState> {
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
 
-    async getData(): Promise<ITaskState> {
+    async getData(): Promise<IIssueState> {
         return {
-            tasks: await getIssues(),
+            issues: await getIssues(),
             inputFocused: false,
             addBtnOver: false,
             loading: false,
@@ -60,82 +49,84 @@ export class GithubIssues extends Widget<ITaskState> {
 
     headerContent(): JSX.Element | undefined {
         return (
-            <div style={headerContentStyle}>
-                <GitHubLogoIcon key={`icon-github-issues`} />
-                <Text key="text-task-title" style={headerTextStyle}>
+            <div className={widgetStyle.headerContent}>
+                <GitHubLogoIcon key={`icon-github-issues`} className="github-header-icon" />
+                <Text key="text-issue-title" className={widgetStyle.headerText}>
                     GitHub Repository Issues
                 </Text>
-                <Button key="bt-task-more" icon={<MoreHorizontal32Regular />} appearance="transparent" />
+                <Button
+                    key="bt-issue-more"
+                    icon={<MoreHorizontal32Regular />}
+                    appearance="transparent"
+                />
             </div>
         );
     }
 
     bodyContent(): JSX.Element | undefined {
-        const loading: boolean = !this.state.data || (this.state.data.loading ?? true);
-        const hasTask = this.state.data?.tasks?.length !== 0;
+        const hasIssue = this.state.issues?.length !== 0;
         return (
-            <div style={bodyLayout(hasTask)}>
-                <TeamsFxContext.Consumer>
-                    {({ themeString }) => this.inputLayout(themeString)}
-                </TeamsFxContext.Consumer>
-                {loading ? (
-                    <></>
-                ) : hasTask ? (
-                    this.state.data?.tasks?.map((item: githubIssuesModel) => {
+            <div className={hasIssue ? "has-issue-layout" : "no-issue-layout"}>
+                {this.inputLayout()}
+                {hasIssue ? (
+                    this.state.issues?.map((item: githubIssuesModel, index) => {
                         return (
-                            <TeamsFxContext.Consumer key={`consumer-task-${item.title}`}>
-                                {({ themeString }) => (
-                                    <div key={`div-task-${item.title}`} style={existingTaskLayout(themeString)} >
-
-                                        <Text key={`cb-task-${item.title}`}
-                                            onClick={() =>
-                                                window.open(
-                                                    item.url,
-                                                    "_blank"
-                                                )}>
-                                            {<LadybugSolidIcon></LadybugSolidIcon>} [{item.state}] {item.title}
-                                        </Text>
-
-                                        <Button
-                                            key={`bt-task-${item.title}`}
-                                            icon={<Open16Filled />}
-                                            onClick={() =>
-                                                window.open(
-                                                    item.url,
-                                                    "_blank"
-                                                )}
-                                            appearance="transparent"
-                                        />
-                                        <Text key={`div-task-${item.title}`} style={descriptionStyle}>
+                            <div
+                                key={`div-issue-${item.title}`}
+                                className={
+                                    index % 2 === 0
+                                        ? "issue-item-even-layout"
+                                        : "issue-item-odd-layout"
+                                }
+                            >
+                                <Image src="issue.svg" className="img-issue" />
+                                <div
+                                    className="issue-content-layout"
+                                    onClick={() => window.open(item.url, "_blank")}
+                                >
+                                    <Text key={`cb-issue-${item.title}`} className="issue-title">
+                                        [{item.state}] {item.title}
+                                    </Text>
+                                    {item.body && (
+                                        <Text
+                                            key={`div-issue-${item.title}`}
+                                            className="issue-desc"
+                                        >
                                             {item.body}
                                         </Text>
-                                    </div>
-                                )
-                                }
-                            </TeamsFxContext.Consumer>
+                                    )}
+                                </div>
+                                <Button
+                                    key={`bt-issue-${item.title}`}
+                                    className="btn-issue-share"
+                                    icon={<Open16Regular />}
+                                    onClick={() => window.open(item.url, "_blank")}
+                                    appearance="transparent"
+                                />
+                            </div>
                         );
                     })
                 ) : (
-                    <div style={emptyLayout}>
+                    <div className="empty-layout">
                         <EmptyThemeImg key="img-empty" />
-                        <Text key="text-empty" weight="semibold" style={emptyTextStyle}>
-                            Once you have a task, you'll find it here
+                        <Text key="text-empty" weight="semibold" className="empty-text">
+                            Once you have a issue, you'll find it here
                         </Text>
                     </div>
                 )}
-            </div >
+            </div>
         );
     }
 
     footerContent(): JSX.Element | undefined {
-        if (!this.state.data?.loading && this.state.data?.tasks?.length !== 0) {
+        if (!this.state.loading && this.state.issues?.length !== 0) {
             return (
                 <Button
                     appearance="transparent"
                     icon={<ArrowRight16Filled />}
                     iconPosition="after"
                     size="small"
-                    style={footerBtnStyle}
+                    className={widgetStyle.footerBtn}
                     onClick={() =>
                         window.open(
                             "https://github.com/aycabasDemo/ContosoProject/issues",
@@ -151,43 +142,40 @@ export class GithubIssues extends Widget<ITaskState> {
         }
     }
 
-    private inputLayout(themeString: string): JSX.Element | undefined {
+    private inputLayout(): JSX.Element | undefined {
         return (
             <div
                 ref={this.inputDivRef}
-                style={addTaskContainer(themeString, this.state.data?.inputFocused)}
-            >
-                {this.state.data?.inputFocused ? (
-                    <Circle20Regular style={addBtnStyle} />
-                ) : (
-                    <Add20Filled style={addBtnStyle} />
+                className={mergeStyles(
+                    "div-issue-add-layout",
+                    this.state.inputFocused ? "div-issue-add-focused" : "div-issue-add-unfocused"
                 )}
+            >
+                {!this.state.inputFocused && <Add20Filled className="issue-add-icon" />}
 
                 <input
                     ref={this.inputRef}
                     type="text"
-                    style={inputStyle(this.state.data?.inputFocused)}
+                    className={
+                        this.state.inputFocused ? "input-issue-focused" : "input-issue-unfocused"
+                    }
                     onFocus={() => this.inputFocusedState()}
-                    placeholder="Create a new issue"
+                    placeholder="Create new"
                 />
-                {this.state.data?.inputFocused && (
+                {this.state.inputFocused && (
                     <button
-                        style={addTaskBtnStyle(this.state.data?.addBtnOver)}
+                        className={this.state.addBtnOver ? "add-btn-enter" : "add-btn-leave"}
                         onClick={() => {
                             this.onAddButtonClick();
                         }}
                         onMouseEnter={() => this.mouseEnterState()}
                         onMouseLeave={() => this.mouseLeaveState()}
                     >
-                        Create
+                        Add
                     </button>
                 )}
             </div>
         );
-    }
-
-    customiseWidgetStyle(): CSSProperties | undefined {
-        return widgetPaddingStyle;
     }
 
     async componentDidMount() {
@@ -202,61 +190,58 @@ export class GithubIssues extends Widget<ITaskState> {
     private handleClickOutside(event: any) {
         if (!this.inputDivRef.current?.contains(event.target)) {
             this.setState({
-                data: {
-                    tasks: this.state.data?.tasks,
-                    inputFocused: false,
-                    addBtnOver: this.state.data?.addBtnOver,
-                    loading: false,
-                },
+                issues: this.state.issues,
+                inputFocused: false,
+                addBtnOver: this.state.addBtnOver,
+                loading: false,
             });
+            this.clearQuestion();
         }
     }
 
     private onAddButtonClick = async () => {
         if (this.inputRef.current && this.inputRef.current.value.length > 0) {
-            const tasks: githubIssuesModel[] = await createIssue(this.inputRef.current.value);
+            const issues: githubIssuesModel[] = await createIssue(this.inputRef.current.value);
             this.setState({
-                data: {
-                    tasks: tasks,
-                    inputFocused: false,
-                    addBtnOver: false,
-                    loading: false,
-                },
+                issues: issues,
+                inputFocused: false,
+                addBtnOver: false,
+                loading: false,
             });
-            this.inputRef.current.value = "";
+            this.clearQuestion();
         }
     };
 
+    private clearQuestion() {
+        if (this.inputRef.current) {
+            this.inputRef.current.value = "";
+        }
+    }
+
     private inputFocusedState = () => {
         this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: true,
-                addBtnOver: this.state.data?.addBtnOver,
-                loading: false,
-            },
+            issues: this.state.issues,
+            inputFocused: true,
+            addBtnOver: this.state.addBtnOver,
+            loading: false,
         });
     };
 
     private mouseEnterState = () => {
         this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: this.state.data?.inputFocused,
-                addBtnOver: true,
-                loading: false,
-            },
+            issues: this.state.issues,
+            inputFocused: this.state.inputFocused,
+            addBtnOver: true,
+            loading: false,
         });
     };
 
     private mouseLeaveState = () => {
         this.setState({
-            data: {
-                tasks: this.state.data?.tasks,
-                inputFocused: this.state.data?.inputFocused,
-                addBtnOver: false,
-                loading: false,
-            },
+            issues: this.state.issues,
+            inputFocused: this.state.inputFocused,
+            addBtnOver: false,
+            loading: false,
         });
     };
 }
