@@ -78,6 +78,10 @@
     color: var(--colorNeutralForeground1) !important;
 }
 
+.work-item-title {
+    cursor: pointer;
+}
+
 .divider {
     height: 1px;
     background-color: var(--colorNeutralStroke2);
