@@ -1,4 +1,4 @@
-# Getting Started with Team Central Dashboard Sample
+# Getting Started with Developer Assist Dashboard Sample
 
 > Note: We really appreciate your feedback! If you encounter any issue or error, please report issues to us following the [Supporting Guide](./../SUPPORT.md). Meanwhile you can make [recording](https://aka.ms/teamsfx-record) of your journey with our product, they really make the product better. Thank you!
 >
