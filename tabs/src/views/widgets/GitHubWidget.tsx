@@ -84,9 +84,15 @@ export class GithubIssues extends Widget<IIssueState> {
                                     className="issue-content-layout"
                                     onClick={() => window.open(item.url, "_blank")}
                                 >
-                                    <Text key={`cb-issue-${item.title}`} className="issue-title">
-                                        [{item.state}] {item.title}
-                                    </Text>
+                                    <div>
+                                        <Text
+                                            key={`cb-issue-state-${index}`}
+                                            className="issue-state"
+                                        >
+                                            [{item.state}]&nbsp;
+                                        </Text>
+                                        {item.title}
+                                    </div>
                                     {item.body && (
                                         <Text
                                             key={`div-issue-${item.title}`}

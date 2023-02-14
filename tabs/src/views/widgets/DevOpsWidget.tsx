@@ -37,8 +37,8 @@ export class DevOps extends Widget<IWorkItemState> {
         try {
             devOpsData = await DevOpsWorkItems();
         } catch (e) {
-            console.log("Get Devops Data Error: ", e)
-        }        
+            console.log("Get Devops Data Error: ", e);
+        }
         return {
             devOpsData: devOpsData,
             inputFocused: false,
@@ -105,7 +105,13 @@ export class DevOps extends Widget<IWorkItemState> {
                                             />
                                         )}
                                         <div key={`div-item-${index}`} className="work-item-layout">
-                                            <Text key={`text-item-title-${index}`}>
+                                            <Text
+                                                key={`text-item-title-${index}`}
+                                                className="work-item-title"
+                                                onClick={() => {
+                                                    window.open(item.url, "_blank");
+                                                }}
+                                            >
                                                 {item.fields.title}
                                             </Text>
                                             <Text key={`text-item-type-${index}`}>
@@ -113,7 +119,7 @@ export class DevOps extends Widget<IWorkItemState> {
                                             </Text>
                                             <div
                                                 key={`div-item-assigned-${item.id}`}
-                                                className="work-items-assigned-state-layout"
+                                                className="work-item-assigned-state-layout"
                                             >
                                                 <Avatar
                                                     key={`avatar-item-assigned-${item.id}`}
