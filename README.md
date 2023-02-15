@@ -31,7 +31,12 @@ Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, A
 
 ### 1. Configure implemented Features  
 Before running this project, make sure to configure integrated features in the Developer Assist Dashboard. Follow the steps to complete the configuration.
-#### DevOps work items
+
+#### Azure DevOps Work Items
+
+> This widget displays DevOps Work Items including the title, type, assigned to and state of the work item:
+![DevOps Work Items](images/workitems.png)
+
 To integrate DevOps Work Items in the dashboard, follow the instructions:
 1. Login to [Azure DevOps](https://dev.azure.com/) and select the project you want to configure in the Developer Assist Dashboard. Copy the `organization name` and `project name` from the project url as shown below:
  ![DevOps project](images/devops.png)
@@ -41,10 +46,10 @@ To integrate DevOps Work Items in the dashboard, follow the instructions:
     * Replace **{OrganizationName}** and **{ProjectName}** with your `organization name` and `project name` inside `https://dev.azure.com/{OrganizationName}/{ProjectName}/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0`.
     * Replace `DEVOPS-PERSONAL-ACCESS-TOKEN` with your personal access token.
 
-> This widget displays DevOps Work Items including the title, type, assigned to and state of the work item:
-![DevOps Work Items](images/workitems.png)
-
 #### GitHub issues
+> This widget displays GitHub issues including the title, status and the url of the GitHub issue. This widget also includes creating a new issue:
+![GitHub Issues](images/githubissues.png)
+
 To integrate GitHub issues in the dashboard, follow the instructions:
 1. Login to [GitHub](https://github.com/) and select **Settings > Developer settings > Personal access token**. Select **Generate new token** to create new personal access token. Give a name to your token, select the repositories you want to access. Under `Repository permissions`, give **Read and write** access to **Issues**.
  ![DevOps project](images/github.png)
@@ -52,25 +57,26 @@ To integrate GitHub issues in the dashboard, follow the instructions:
     * Replace `GITHUB-PERSONAL-ACCESS-TOKEN` with your personal access token.
     * Replace `REPOSITORY-OWNER-NAME` with your GitHub username and `REPOSITORY-NAME` with your repository name.
 
-> This widget displays GitHub issues including the title, status and the url of the GitHub issue. This widget also includes creating a new issue functionality:
-![GitHub Issues](images/githubissues.png)
-
 #### Planner tasks
+
+> This widget displays Planner tasks including the title of the task. This widget also includes creating a new task functionality:
+![Planner Tasks](images/plannertasks.png)
+
 To integrate Planner tasks in the dashboard, follow the instructions:
 1. Login to [Microsoft Planner](https://tasks.office.com/) and select the plan you want to integrate, copy the **Plan Id** from the URL:
  ![Planner](images/planner.png)
 1. Open **plannerService.ts** file inside `tabs > src > services` folder, replace `{plan-id}` inside `/planner/plans/{plan-id}/tasks?$top=4` with your plan id.
 
-> This widget displays Planner tasks including the title of the task. This widget also includes creating a new task functionality:
-![Planner Tasks](images/plannertasks.png)
-
 #### OpenAI Code Helper
+
+> This widget displays OpenAI Code Helper that responds user's code related questions with a code snippet:
+![Code Helper](images/codehelper.png)
+
 To integrate OpenAI Code Helper in the dashboard, follow the instructions:
 1. Login to [OpenAI API Keys](https://platform.openai.com/account/api-keys) to create a new API key. Select **Create new secret key** and copy the API key.
 1. Open **openAIService.ts** file inside `tabs > src > services` folder, replace `OPEN-API-KEY` with your OpenAI API Key.
 
-> This widget displays OpenAI Code Helper that responds user's code related questions with a code snippet:
-![Code Helper](images/codehelper.png)
+
 
 ### 2. Run the sample
 Start debugging the project by hitting the `F5` key in Visual Studio Code.
