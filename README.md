@@ -62,7 +62,7 @@ To integrate Planner tasks in the dashboard, follow the instructions:
 1. Open **plannerService.ts** file inside `tabs > src > services` folder, replace `{plan-id}` inside `/planner/plans/{plan-id}/tasks?$top=4` with your plan id.
 
 This widget displays Planner tasks including the title of the task. This widget also includes creating a new task functionality:
-![DevOps Work Items](images/plannertasks.png)
+![Planner Tasks](images/plannertasks.png)
 
 ### OpenAI Code Helper
 To integrate OpenAI Code Helper in the dashboard, follow the instructions:
