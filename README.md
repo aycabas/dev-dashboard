@@ -11,13 +11,20 @@ Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, A
 
 ![team-central-dashboard](images/dev-dashboard.gif)
 
+# Table of Content
+1. [Prerequisites](#Prerequisites)
+2. [What will you learn in this sample?](#what-will-you-learn-in-this-sample?)
+3. [Try the Sample with Visual Studio Code Extension](#what-you-will-learn-in-this-sample)
+    * 
+4. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
+
 ## Prerequisites
 
 - [NodeJS](https://nodejs.org/en/), fully tested on NodeJS 14, 16
 - An M365 account. If you do not have M365 account, apply one from [M365 developer program](https://developer.microsoft.com/en-us/microsoft-365/dev-program)
 - [Teams Toolkit Visual Studio Code Extension](https://aka.ms/teams-toolkit) or [TeamsFx CLI](https://aka.ms/teamsfx-cli)
 
-## What you will learn in this sample:
+## What will you learn in this sample?
 - How to use TeamsFx to embed a canvas containing multiple cards that provide an overview of data or content in your tab app.
 - How to use TeamsFx to build frontend hosting on Azure for your tab app.
 - How to use TeamsFx to build backend hosting on Azure for your tab app.
@@ -31,7 +38,7 @@ Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, A
 
 Before running this project, make sure to configure integrated features in the Developer Assist Dashboard. Follow the steps to complete the configuration.
 
-### 1️⃣ Azure DevOps Work Items:
+### Azure DevOps Work Items:
 > This widget displays DevOps Work Items including the title, type, assigned to and state of the work item:
 ![DevOps Work Items](images/workitems.png)
 
@@ -44,7 +51,7 @@ To integrate DevOps Work Items in the dashboard, follow the instructions:
     * Replace **{OrganizationName}** and **{ProjectName}** with your `organization name` and `project name` inside `https://dev.azure.com/{OrganizationName}/{ProjectName}/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0`.
     * Replace `DEVOPS-PERSONAL-ACCESS-TOKEN` with your personal access token.
 
-### 2️⃣ GitHub Issues:
+### GitHub Issues:
 > This widget displays GitHub issues including the title, status and the url of the GitHub issue. This widget also includes creating a new issue:
 ![GitHub Issues](images/githubissues.png)
 
@@ -55,7 +62,7 @@ To integrate GitHub issues in the dashboard, follow the instructions:
     * Replace `GITHUB-PERSONAL-ACCESS-TOKEN` with your personal access token.
     * Replace `REPOSITORY-OWNER-NAME` with your GitHub username and `REPOSITORY-NAME` with your repository name.
 
-### 3️⃣ Planner Tasks:
+### Planner Tasks:
 > This widget displays Planner tasks including the title of the task. This widget also includes creating a new task functionality:
 ![Planner Tasks](images/plannertasks.png)
 
@@ -64,7 +71,7 @@ To integrate Planner tasks in the dashboard, follow the instructions:
  ![Planner](images/planner.png)
 1. Open **plannerService.ts** file inside `tabs > src > services` folder, replace `{plan-id}` inside `/planner/plans/{plan-id}/tasks?$top=4` with your plan id.
 
-### 4️⃣ OpenAI Code Helper:
+### OpenAI Code Helper:
 > This widget displays OpenAI Code Helper that responds user's code related questions with a code snippet:
 ![Code Helper](images/codehelper.png)
 
@@ -72,8 +79,7 @@ To integrate OpenAI Code Helper in the dashboard, follow the instructions:
 1. Login to [OpenAI API Keys](https://platform.openai.com/account/api-keys) to create a new API key. Select **Create new secret key** and copy the API key.
 1. Open **openAIService.ts** file inside `tabs > src > services` folder, replace `OPEN-API-KEY` with your OpenAI API Key.
 
----
->After completing the integration of the features, you may start debugging the project by hitting the `F5` key in Visual Studio Code.
+**After completing the integration of the features, you may start debugging the project by hitting the `F5` key in Visual Studio Code.**
 
 > The first time you run this sample, you need to login to consent some delegated permissions. If you don't see the consent page, please check if your browser blocks the pop-up window.
 ![pop-up block](images/popup-block.png)
