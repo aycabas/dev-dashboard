@@ -1,5 +1,20 @@
 # Getting Started with Developer Assist Dashboard Sample
 
+## Table of Content
+1. [Prerequisites](#prerequisites)
+2. [What will you learn in this sample?](#what-will-you-learn-in-this-sample?)
+3. [Try the Sample with Visual Studio Code Extension](#what-you-will-learn-in-this-sample)
+    * [Azure DevOps Work Items](#azure-devops-work-items)
+    * [GitHub Issues](#github-issues)
+    * [Planner Tasks](#planner-tasks)
+    * [OpenAI Code Helper](#openai-code-helper)
+4. [Edit the manifest](#edit-the-manifest)
+5. [Deploy to Azure](#deploy-to-azure)
+6. [Package](#package)
+7. [Publish to Microsoft Teams](#publish-to-teams)
+8. [Architecture](#architecture)
+9. [Code structure](#code-structure)
+10. [Code of Conduct](#code-of-conduct)
 > Note: We really appreciate your feedback! If you encounter any issue or error, please report issues to us following the [Supporting Guide](./../SUPPORT.md). Meanwhile you can make [recording](https://aka.ms/teamsfx-record) of your journey with our product, they really make the product better. Thank you!
 >
 > This warning will be removed when the samples are ready for production.
@@ -10,13 +25,6 @@ Microsoft Teams supports the ability to run web-based UI inside "custom tabs" th
 Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, Azure DevOps work items, GitHub issues and Planner tasks to accelerate developer team collaboration and productivity.
 
 ![team-central-dashboard](images/dev-dashboard.gif)
-
-# Table of Content
-1. [Prerequisites](#Prerequisites)
-2. [What will you learn in this sample?](#what-will-you-learn-in-this-sample?)
-3. [Try the Sample with Visual Studio Code Extension](#what-you-will-learn-in-this-sample)
-    * 
-4. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
 
 ## Prerequisites
 
