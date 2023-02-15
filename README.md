@@ -28,19 +28,55 @@ Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, A
 1. Clone the repo to your local workspace or directly download the source code.
 2. Download [Visual Studio Code](https://code.visualstudio.com) and install [Teams Toolkit Visual Studio Code Extension](https://aka.ms/teams-toolkit).
 3. Open the project in Visual Studio Code.
-4. Start debugging the project by hitting the `F5` key in Visual Studio Code.
+
+## Configure implemented Features  
+Before running this project, make sure to configure integrated features in the Developer Assist Dashboard. Follow the steps to complete the configuration.
+### 1. DevOps work items
+To integrate DevOps Work Items in the dashboard, follow the instructions:
+1. Login to [Azure DevOps](https://dev.azure.com/) and select the project you want to configure in the Developer Assist Dashboard. Copy the `organization name` and `project name` from the project url as shown below:
+ ![DevOps project](images/devops.png)
+1. In Azure DevOps, select **User settings** and then select **Personal access token**. Select **+ New token** to create a new personal access token, give a name to your token, select **Read** permission for Work Items and **Create**.
+ ![DevOps project](images/devops-personal-token.png)
+1. Open **devopsService.ts** file inside `tabs > src > services` folder: 
+    * Replace **{OrganizationName}** and **{ProjectName}** with your `organization name` and `project name` inside `https://dev.azure.com/{OrganizationName}/{ProjectName}/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0`.
+    * Replace `DEVOPS-PERSONAL-ACCESS-TOKEN` with your personal access token.
+
+This widget displays DevOps Work Items including the title, type, assigned to and state of the work item:
+![DevOps Work Items](images/workitems.png)
+
+### 2. GitHub issues
+To integrate GitHub issues in the dashboard, follow the instructions:
+1. Login to [GitHub](https://github.com/) and select **Settings > Developer settings > Personal access token**. Select **Generate new token** to create new personal access token. Give a name to your token, select the repositories you want to access. Under `Repository permissions`, give **Read and write** access to **Issues**.
+ ![DevOps project](images/github.png)
+1. Open **githubService.ts** file inside `tabs > src > services` folder, inside the both of **GetIssues** and **CreateIssue** functions:
+    * Replace `GITHUB-PERSONAL-ACCESS-TOKEN` with your personal access token.
+    * Replace `REPOSITORY-OWNER-NAME` with your GitHub username and `REPOSITORY-NAME` with your repository name.
+
+This widget displays GitHub issues including the title, status and the url of the GitHub issue. This widget also includes creating a new issue functionality:
+![DevOps Work Items](images/githubissues.png)
+
+### 3. Planner tasks
+To integrate Planner tasks in the dashboard, follow the instructions:
+1. Login to [Microsoft Planner](https://tasks.office.com/) and select the plan you want to integrate, copy the **Plan Id** from the URL:
+ ![Planner](images/planner.png)
+1. Open **plannerService.ts** file inside `tabs > src > services` folder, replace `{plan-id}` inside `/planner/plans/{plan-id}/tasks?$top=4` with your plan id.
+
+This widget displays Planner tasks including the title of the task. This widget also includes creating a new task functionality:
+![DevOps Work Items](images/plannertasks.png)
+
+### 4. OpenAI Code Helper
+To integrate OpenAI Code Helper in the dashboard, follow the instructions:
+1. Login to [OpenAI API Keys](https://platform.openai.com/account/api-keys) to create a new API key. Select **Create new secret key** and copy the API key.
+1. Open **openAIService.ts** file inside `tabs > src > services` folder, replace `OPEN-API-KEY` with your OpenAI API Key.
+
+This widget displays OpenAI Code Helper that responds user's code related questions with a code snippet:
+![DevOps Work Items](images/codehelper.png)
+
+## Run the sample
+Start debugging the project by hitting the `F5` key in Visual Studio Code.
 
 > The first time you run this sample, you need to login to consent some delegated permissions. If you don't see the consent page, please check if your browser blocks the pop-up window.
 ![pop-up block](images/popup-block.png)
-
-## Implemented Features  
-
-### DevOps work items
-
-### Team Planner tasks
-
-### OpenAI Code Helper
-
 
 ## Edit the manifest
 
@@ -76,11 +112,11 @@ Once deployed, you may want to distribute your application to your organization'
 - The frontend is a react tab app hosted on [Azure Storage](https://docs.microsoft.com/en-us/azure/storage/).
 - The Backend server is hosted on [Azure Function](https://docs.microsoft.com/en-us/azure/azure-functions/) for managing posts in the tab app.
 
-### Code structure [TO BE UPDATED]
+### Code structure
 
 - You can check app configuration and environment information in: [.fx](.fx)
-- You will find frontend code in: [tabs/src](tabs/src)
-- You will find backend code in: [api/finishTaskNotification](api/finishTaskNotification)
+- You will find frontend code in: [tabs/src/views/widgets](tabs/src/views/widgets)
+- You will find backend code in: [tabs/src/services](tabs/src/services)
 
 ## Code of Conduct
 

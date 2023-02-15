@@ -11,8 +11,9 @@ export async function getIssues(): Promise<githubIssuesModel[]> {
 
     try {
         const resp = await octokit.request('GET /repos/{owner}/{repo}/issues', {
-            owner: 'aycabasDemo',
-            repo: 'ContosoProject'
+            //repository name and owner name
+            owner: 'REPOSITORY-OWNER-NAME',
+            repo: 'REPOSITORY-NAME'
         })
 
         let issues: githubIssuesModel[] = [];
@@ -41,12 +42,14 @@ export async function createIssue(title: string): Promise<githubIssuesModel[]> {
     try {
 
         await octokit.request('POST /repos/{owner}/{repo}/issues', {
-            owner: 'aycabasDemo',
-            repo: 'ContosoProject',
+            //repository name and owner name
+            owner: 'REPOSITORY-OWNER-NAME',
+            repo: 'REPOSITORY-NAME',
             title: title
         })
 
         const resp = await octokit.request('GET /repos/{owner}/{repo}/issues', {
+            //repository name and owner name
             owner: 'aycabasDemo',
             repo: 'ContosoProject'
         })
