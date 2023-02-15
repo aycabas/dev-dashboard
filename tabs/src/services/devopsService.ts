@@ -3,7 +3,7 @@ export async function DevOpsWorkItems(): Promise<DevOpsModel[]> {
     try {
         let devopsItems: DevOpsModel[] = [];
         const req = await fetch(
-            "https://dev.azure.com/DemoContosoOrg/ContosoProject/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0",
+            "https://dev.azure.com/{OrganizationName}{ProjectName}/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0",
             {
                 method: "GET",
                 headers: {
