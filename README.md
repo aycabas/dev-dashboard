@@ -19,12 +19,12 @@ Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, A
     * [GitHub Issues](#github-issues)
     * [Planner Tasks](#planner-tasks)
     * [OpenAI Code Helper](#openai-code-helper)
-4. [Edit the manifest](#edit-the-manifest)
+4. [Edit the Manifest](#edit-the-manifest)
 5. [Deploy to Azure](#deploy-to-azure)
 6. [Package](#package)
 7. [Publish to Microsoft Teams](#publish-to-teams)
 8. [Architecture](#architecture)
-9. [Code structure](#code-structure)
+9. [Code Structure](#code-structure)
 10. [Code of Conduct](#code-of-conduct)
 
 ## Prerequisites
@@ -93,7 +93,7 @@ To integrate OpenAI Code Helper in the dashboard, follow the instructions:
 > The first time you run this sample, you need to login to consent some delegated permissions. If you don't see the consent page, please check if your browser blocks the pop-up window.
 ![pop-up block](images/popup-block.png)
 
-## Edit the manifest
+## Edit the Manifest
 
 You can find the Teams manifest in `templates/appPackage` folder. The templates contains:
 * `manifest.template.json`: Manifest file for Teams app running locally and remotely.
@@ -115,7 +115,7 @@ Deploy your project to Azure by following these steps:
 - From Visual Studio Code: open the command palette and select `Teams: Zip Teams metadata package`.
 - Alternatively, from the command line run `teamsfx package` in the project directory.
 
-## Publish to Teams
+## Publish to Microsoft Teams
 
 Once deployed, you may want to distribute your application to your organization's internal app store in Teams. Your app will be submitted for admin approval.
 
@@ -127,7 +127,7 @@ Once deployed, you may want to distribute your application to your organization'
 - The frontend is a react tab app hosted on [Azure Storage](https://docs.microsoft.com/en-us/azure/storage/).
 - The Backend server is hosted on [Azure Function](https://docs.microsoft.com/en-us/azure/azure-functions/) for managing posts in the tab app.
 
-### Code structure
+### Code Structure
 
 - You can check app configuration and environment information in: [.fx](.fx)
 - You will find frontend code in: [tabs/src/views/widgets](tabs/src/views/widgets)
