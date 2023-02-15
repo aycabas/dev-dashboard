@@ -31,7 +31,7 @@ Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, A
 
 ## Configure implemented Features  
 Before running this project, make sure to configure integrated features in the Developer Assist Dashboard. Follow the steps to complete the configuration.
-### 1. DevOps work items
+### DevOps work items
 To integrate DevOps Work Items in the dashboard, follow the instructions:
 1. Login to [Azure DevOps](https://dev.azure.com/) and select the project you want to configure in the Developer Assist Dashboard. Copy the `organization name` and `project name` from the project url as shown below:
  ![DevOps project](images/devops.png)
@@ -44,7 +44,7 @@ To integrate DevOps Work Items in the dashboard, follow the instructions:
 This widget displays DevOps Work Items including the title, type, assigned to and state of the work item:
 ![DevOps Work Items](images/workitems.png)
 
-### 2. GitHub issues
+### GitHub issues
 To integrate GitHub issues in the dashboard, follow the instructions:
 1. Login to [GitHub](https://github.com/) and select **Settings > Developer settings > Personal access token**. Select **Generate new token** to create new personal access token. Give a name to your token, select the repositories you want to access. Under `Repository permissions`, give **Read and write** access to **Issues**.
  ![DevOps project](images/github.png)
@@ -55,7 +55,7 @@ To integrate GitHub issues in the dashboard, follow the instructions:
 This widget displays GitHub issues including the title, status and the url of the GitHub issue. This widget also includes creating a new issue functionality:
 ![DevOps Work Items](images/githubissues.png)
 
-### 3. Planner tasks
+### Planner tasks
 To integrate Planner tasks in the dashboard, follow the instructions:
 1. Login to [Microsoft Planner](https://tasks.office.com/) and select the plan you want to integrate, copy the **Plan Id** from the URL:
  ![Planner](images/planner.png)
@@ -64,7 +64,7 @@ To integrate Planner tasks in the dashboard, follow the instructions:
 This widget displays Planner tasks including the title of the task. This widget also includes creating a new task functionality:
 ![DevOps Work Items](images/plannertasks.png)
 
-### 4. OpenAI Code Helper
+### OpenAI Code Helper
 To integrate OpenAI Code Helper in the dashboard, follow the instructions:
 1. Login to [OpenAI API Keys](https://platform.openai.com/account/api-keys) to create a new API key. Select **Create new secret key** and copy the API key.
 1. Open **openAIService.ts** file inside `tabs > src > services` folder, replace `OPEN-API-KEY` with your OpenAI API Key.
