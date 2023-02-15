@@ -20,6 +20,7 @@ const scope = [
     "Sites.Read.All",
     "Files.ReadWrite.All",
     "Sites.ReadWrite.All",
+    "User.Read.All",
 ];
 
 export default class SampleDashboard extends Dashboard {

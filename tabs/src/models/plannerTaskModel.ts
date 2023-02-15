@@ -4,4 +4,11 @@ export interface TaskModel {
     percentComplete?: string;
     priority?: string;
     createdDateTime?: string;
+    assignments?: TaskAssignedToModel[];
+}
+
+export interface TaskAssignedToModel {
+    userId: string;
+    userDisplayName: string;
+    userAvatarUrl: string;
 }

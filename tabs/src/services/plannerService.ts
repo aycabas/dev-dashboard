@@ -1,6 +1,6 @@
 import { createMicrosoftGraphClientWithCredential, TeamsUserCredential } from "@microsoft/teamsfx";
 import { Client } from "@microsoft/microsoft-graph-client";
-import { TaskModel } from "../models/plannerTaskModel";
+import { TaskAssignedToModel, TaskModel } from "../models/plannerTaskModel";
 import { TeamsUserCredentialContext } from "../internal/singletonContext";
 
 export async function getTasks(): Promise<TaskModel[]> {
@@ -12,11 +12,16 @@ export async function getTasks(): Promise<TaskModel[]> {
             "Group.ReadWrite.All",
         ]);
         const resp = await graphClient
-            .api(`/planner/plans/wIfl13Xg6UCD_d5irDOTWJgAHcUy/tasks?$top=4`)
+            .api(`/planner/plans/h4vAIIpyo0KPidc_WGpLAWUAEagS/tasks?$top=4`)
             .get();
         const tasksInfo = resp["value"];
         let tasks: TaskModel[] = [];
         for (const obj of tasksInfo) {
+            if (obj["assignments"] !== undefined) {
+                for (const assign of obj["assignments"].keys()) {
+                    const user = await getUser(assign);
+                }
+            }            
             const tmp: TaskModel = {
                 id: obj["id"],
                 name: obj["title"],
@@ -44,13 +49,13 @@ export async function addTask(title: string): Promise<TaskModel[]> {
             "Group.ReadWrite.All",
         ]);
         const plannerTask = {
-            planId: "wIfl13Xg6UCD_d5irDOTWJgAHcUy",
-            bucketId: "JH1nQBAMqUSDWcSZapZ745gALtiv",
+            planId: "h4vAIIpyo0KPidc_WGpLAWUAEagS",
+            bucketId: "hGZpkzHbhU-_6u4kyd4RLGUANN-u",
             title: title,
         };
         await graphClient.api("/planner/tasks").post(plannerTask);
         const tasks = await graphClient
-            .api("/planner/plans/wIfl13Xg6UCD_d5irDOTWJgAHcUy/tasks?$top=4")
+            .api("/planner/plans/h4vAIIpyo0KPidc_WGpLAWUAEagS/tasks?$top=4")
             .get();
         const tasksInfo = tasks["value"];
         let taskResult: TaskModel[] = [];
@@ -74,4 +79,20 @@ export function openTaskApp() {
         "https://teams.microsoft.com/l/app/0d5c91ee-5be2-4b79-81ed-23e6c4580427?source=app-details-dialog",
         "_blank"
     );
+}
+
+async function getUser(userId: string): Promise<TaskAssignedToModel[]> {
+    let credential: TeamsUserCredential;
+    try {
+        credential = TeamsUserCredentialContext.getInstance().getCredential();
+        const graphClient: Client = createMicrosoftGraphClientWithCredential(credential, [
+            "User.Read.All",
+        ]);
+        const resp = await graphClient.api(`/users/${userId}`).get();       
+        
+        let users: TaskAssignedToModel[] = [];
+        return users;
+    } catch (e) {
+        throw e;
+    }
 }
