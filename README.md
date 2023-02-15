@@ -21,7 +21,7 @@ Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, A
 - How to use TeamsFx to embed a canvas containing multiple cards that provide an overview of data or content in your tab app.
 - How to use TeamsFx to build frontend hosting on Azure for your tab app.
 - How to use TeamsFx to build backend hosting on Azure for your tab app.
-- How to use MS graph client in TeamsFx to get access to M365 data.
+- How to use DevOps, GitHub, OpenAI and Microsoft Graph APIs in TeamsFx to get access to variety of data.
 
 ## Try the Sample with Visual Studio Code Extension: [TO BE UPDATED]
 > Here are the instructions to run the sample in **Visual Studio Code**. You can also try to run the app using TeamsFx CLI tool, refer to [Try the Sample with TeamsFx CLI](cli.md)
