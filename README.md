@@ -41,8 +41,7 @@ To integrate DevOps Work Items in the dashboard, follow the instructions:
     * Replace **{OrganizationName}** and **{ProjectName}** with your `organization name` and `project name` inside `https://dev.azure.com/{OrganizationName}/{ProjectName}/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0`.
     * Replace `DEVOPS-PERSONAL-ACCESS-TOKEN` with your personal access token.
 
-This widget displays DevOps Work Items including the title, type, assigned to and state of the work item:
-
+> This widget displays DevOps Work Items including the title, type, assigned to and state of the work item:
 ![DevOps Work Items](images/workitems.png)
 
 #### GitHub issues
@@ -53,9 +52,8 @@ To integrate GitHub issues in the dashboard, follow the instructions:
     * Replace `GITHUB-PERSONAL-ACCESS-TOKEN` with your personal access token.
     * Replace `REPOSITORY-OWNER-NAME` with your GitHub username and `REPOSITORY-NAME` with your repository name.
 
-This widget displays GitHub issues including the title, status and the url of the GitHub issue. This widget also includes creating a new issue functionality:
-
-![DevOps Work Items](images/githubissues.png)
+> This widget displays GitHub issues including the title, status and the url of the GitHub issue. This widget also includes creating a new issue functionality:
+![GitHub Issues](images/githubissues.png)
 
 #### Planner tasks
 To integrate Planner tasks in the dashboard, follow the instructions:
@@ -63,8 +61,7 @@ To integrate Planner tasks in the dashboard, follow the instructions:
  ![Planner](images/planner.png)
 1. Open **plannerService.ts** file inside `tabs > src > services` folder, replace `{plan-id}` inside `/planner/plans/{plan-id}/tasks?$top=4` with your plan id.
 
-This widget displays Planner tasks including the title of the task. This widget also includes creating a new task functionality:
-
+> This widget displays Planner tasks including the title of the task. This widget also includes creating a new task functionality:
 ![Planner Tasks](images/plannertasks.png)
 
 #### OpenAI Code Helper
@@ -72,8 +69,7 @@ To integrate OpenAI Code Helper in the dashboard, follow the instructions:
 1. Login to [OpenAI API Keys](https://platform.openai.com/account/api-keys) to create a new API key. Select **Create new secret key** and copy the API key.
 1. Open **openAIService.ts** file inside `tabs > src > services` folder, replace `OPEN-API-KEY` with your OpenAI API Key.
 
-This widget displays OpenAI Code Helper that responds user's code related questions with a code snippet:
-
+> This widget displays OpenAI Code Helper that responds user's code related questions with a code snippet:
 ![Code Helper](images/codehelper.png)
 
 ### 2. Run the sample
