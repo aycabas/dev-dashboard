@@ -29,7 +29,7 @@ Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, A
 2. Download [Visual Studio Code](https://code.visualstudio.com) and install [Teams Toolkit Visual Studio Code Extension](https://aka.ms/teams-toolkit).
 3. Open the project in Visual Studio Code.
 
-### Configure implemented Features  
+### 1. Configure implemented Features  
 Before running this project, make sure to configure integrated features in the Developer Assist Dashboard. Follow the steps to complete the configuration.
 #### DevOps work items
 To integrate DevOps Work Items in the dashboard, follow the instructions:
@@ -76,7 +76,7 @@ This widget displays OpenAI Code Helper that responds user's code related questi
 
 ![Code Helper](images/codehelper.png)
 
-### Run the sample
+### 2. Run the sample
 Start debugging the project by hitting the `F5` key in Visual Studio Code.
 
 > The first time you run this sample, you need to login to consent some delegated permissions. If you don't see the consent page, please check if your browser blocks the pop-up window.
