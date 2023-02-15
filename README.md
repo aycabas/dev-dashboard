@@ -42,6 +42,7 @@ To integrate DevOps Work Items in the dashboard, follow the instructions:
     * Replace `DEVOPS-PERSONAL-ACCESS-TOKEN` with your personal access token.
 
 This widget displays DevOps Work Items including the title, type, assigned to and state of the work item:
+
 ![DevOps Work Items](images/workitems.png)
 
 #### GitHub issues
@@ -53,6 +54,7 @@ To integrate GitHub issues in the dashboard, follow the instructions:
     * Replace `REPOSITORY-OWNER-NAME` with your GitHub username and `REPOSITORY-NAME` with your repository name.
 
 This widget displays GitHub issues including the title, status and the url of the GitHub issue. This widget also includes creating a new issue functionality:
+
 ![DevOps Work Items](images/githubissues.png)
 
 #### Planner tasks
@@ -62,6 +64,7 @@ To integrate Planner tasks in the dashboard, follow the instructions:
 1. Open **plannerService.ts** file inside `tabs > src > services` folder, replace `{plan-id}` inside `/planner/plans/{plan-id}/tasks?$top=4` with your plan id.
 
 This widget displays Planner tasks including the title of the task. This widget also includes creating a new task functionality:
+
 ![Planner Tasks](images/plannertasks.png)
 
 #### OpenAI Code Helper
@@ -70,7 +73,8 @@ To integrate OpenAI Code Helper in the dashboard, follow the instructions:
 1. Open **openAIService.ts** file inside `tabs > src > services` folder, replace `OPEN-API-KEY` with your OpenAI API Key.
 
 This widget displays OpenAI Code Helper that responds user's code related questions with a code snippet:
-![DevOps Work Items](images/codehelper.png)
+
+![Code Helper](images/codehelper.png)
 
 ### Run the sample
 Start debugging the project by hitting the `F5` key in Visual Studio Code.
