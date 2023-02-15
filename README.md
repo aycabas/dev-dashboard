@@ -33,7 +33,7 @@ Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, A
 Before running this project, make sure to configure integrated features in the Developer Assist Dashboard. Follow the steps to complete the configuration.
 
 #### Azure DevOps Work Items
-
+---
 > This widget displays DevOps Work Items including the title, type, assigned to and state of the work item:
 ![DevOps Work Items](images/workitems.png)
 
@@ -47,6 +47,7 @@ To integrate DevOps Work Items in the dashboard, follow the instructions:
     * Replace `DEVOPS-PERSONAL-ACCESS-TOKEN` with your personal access token.
 
 #### GitHub issues
+---
 > This widget displays GitHub issues including the title, status and the url of the GitHub issue. This widget also includes creating a new issue:
 ![GitHub Issues](images/githubissues.png)
 
@@ -58,7 +59,7 @@ To integrate GitHub issues in the dashboard, follow the instructions:
     * Replace `REPOSITORY-OWNER-NAME` with your GitHub username and `REPOSITORY-NAME` with your repository name.
 
 #### Planner tasks
-
+---
 > This widget displays Planner tasks including the title of the task. This widget also includes creating a new task functionality:
 ![Planner Tasks](images/plannertasks.png)
 
@@ -68,7 +69,7 @@ To integrate Planner tasks in the dashboard, follow the instructions:
 1. Open **plannerService.ts** file inside `tabs > src > services` folder, replace `{plan-id}` inside `/planner/plans/{plan-id}/tasks?$top=4` with your plan id.
 
 #### OpenAI Code Helper
-
+---
 > This widget displays OpenAI Code Helper that responds user's code related questions with a code snippet:
 ![Code Helper](images/codehelper.png)
 
