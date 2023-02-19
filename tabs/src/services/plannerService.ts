@@ -1,7 +1,8 @@
-import { createMicrosoftGraphClientWithCredential, TeamsUserCredential } from "@microsoft/teamsfx";
 import { Client } from "@microsoft/microsoft-graph-client";
-import { TaskAssignedToModel, TaskModel } from "../models/plannerTaskModel";
+import { createMicrosoftGraphClientWithCredential, TeamsUserCredential } from "@microsoft/teamsfx";
+
 import { TeamsUserCredentialContext } from "../internal/singletonContext";
+import { TaskAssignedToModel, TaskModel } from "../models/plannerTaskModel";
 
 export async function getTasks(): Promise<TaskModel[]> {
     let credential: TeamsUserCredential;
@@ -17,20 +18,24 @@ export async function getTasks(): Promise<TaskModel[]> {
         const tasksInfo = resp["value"];
         let tasks: TaskModel[] = [];
         for (const obj of tasksInfo) {
-            if (obj["assignments"] !== undefined) {
-                for (const assign of obj["assignments"].keys()) {
-                    const user = await getUser(assign);
-                }
-            }            
-            const tmp: TaskModel = {
+            const taskInfo: TaskModel = {
                 id: obj["id"],
                 name: obj["title"],
                 priority: obj["priority"],
                 percentComplete: obj["percentComplete"],
             };
-            tasks.push(tmp);
+            if (obj["assignments"] !== undefined) {
+                let assignMap: Map<String, object> = new Map(Object.entries(obj["assignments"]));
+                let assignments: TaskAssignedToModel[] = [];
+                assignMap.forEach(async (value, userId) => {
+                    const assignInfo: TaskAssignedToModel = await getUser(userId as string);
+                    assignments.push(assignInfo);
+                });
+                taskInfo.assignments = assignments;
+            }
+            tasks.push(taskInfo);
             let plannerTaskDetails = await graphClient
-                .api("/planner/tasks/" + tmp.id + "/details")
+                .api("/planner/tasks/" + taskInfo.id + "/details")
                 .get();
         }
         return tasks;
@@ -81,18 +86,29 @@ export function openTaskApp() {
     );
 }
 
-async function getUser(userId: string): Promise<TaskAssignedToModel[]> {
-    let credential: TeamsUserCredential;
+async function getUser(userId: string): Promise<TaskAssignedToModel> {
+    let assignedInfo: TaskAssignedToModel = {
+        userId: "",
+        userDisplayName: "",
+        userAvatar: undefined,
+    };
     try {
+        let credential: TeamsUserCredential;
         credential = TeamsUserCredentialContext.getInstance().getCredential();
         const graphClient: Client = createMicrosoftGraphClientWithCredential(credential, [
             "User.Read.All",
         ]);
-        const resp = await graphClient.api(`/users/${userId}`).get();       
-        
-        let users: TaskAssignedToModel[] = [];
-        return users;
+        const userInfo = await graphClient.api(`/users/${userId}`).get();
+        const photo = await graphClient.api(`/users/${userId}/photo/$value`).get();
+
+        assignedInfo = {
+            userId: userId,
+            userDisplayName: userInfo["displayName"],
+            userAvatar: photo,
+        };
+        return assignedInfo;
     } catch (e) {
-        throw e;
+        console.log("getUser error: " + e);
     }
+    return assignedInfo;
 }

@@ -3,7 +3,14 @@ import "../styles/PlannerTask.css";
 import React from "react";
 
 import { mergeStyles } from "@fluentui/react";
-import { Button, Checkbox, Image, Spinner, Text } from "@fluentui/react-components";
+import {
+    Avatar,
+    Button,
+    Checkbox,
+    Image,
+    Spinner,
+    Text,
+} from "@fluentui/react-components";
 import {
     Add20Filled,
     ArrowRight16Filled,
@@ -13,7 +20,7 @@ import {
 } from "@fluentui/react-icons";
 
 import { TeamsFxContext } from "../../internal/context";
-import { TaskModel } from "../../models/plannerTaskModel";
+import { TaskAssignedToModel, TaskModel } from "../../models/plannerTaskModel";
 import { addTask, getTasks } from "../../services/plannerService";
 import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
@@ -76,34 +83,46 @@ export class PlannerTask extends Widget<ITaskState> {
         const hasTask = this.state.tasks?.length !== 0;
         return (
             <div className={hasTask ? "has-task-layout" : "no-task-layout"}>
-                <TeamsFxContext.Consumer>
-                    {({ themeString }) => this.inputLayout(themeString)}
-                </TeamsFxContext.Consumer>
+                {this.inputLayout()}
                 {hasTask ? (
                     this.state.tasks?.map((item: TaskModel) => {
                         return (
-                            <TeamsFxContext.Consumer key={`consumer-planner-${item.id}`}>
-                                {({ themeString }) => (
-                                    <div
-                                        key={`div-planner-${item.id}`}
-                                        className={mergeStyles(
-                                            "existing-task-layout",
-                                            themeString === "contrast" ? "border-style" : ""
-                                        )}
-                                    >
-                                        <Checkbox
-                                            key={`cb-planner-${item.id}`}
-                                            shape="circular"
-                                            label={item.name}
-                                        />
-                                        <Button
-                                            key={`bt-planner-${item.id}`}
-                                            icon={<Star24Regular />}
-                                            appearance="transparent"
-                                        />
-                                    </div>
-                                )}
-                            </TeamsFxContext.Consumer>
+                            <div className="div-task-item">
+                                <div
+                                    key={`div-planner-${item.id}`}
+                                    className="existing-task-layout"
+                                >
+                                    <Checkbox
+                                        key={`cb-planner-${item.id}`}
+                                        shape="circular"
+                                        label={item.name}
+                                    />
+                                    <Button
+                                        key={`bt-planner-${item.id}`}
+                                        icon={<Star24Regular />}
+                                        appearance="transparent"
+                                    />
+                                </div>
+                                <div className="assign-layout">
+                                    {item.assignments?.map((assignItem: TaskAssignedToModel) => {
+                                        if (assignItem.userAvatar !== undefined) {
+                                            return (
+                                                <Avatar
+                                                    key={`avatar-planner-${item.id}-${assignItem.userId}`}
+                                                    className="assign-avatar"
+                                                    name={assignItem.userDisplayName}
+                                                    image={{
+                                                        src: URL.createObjectURL(
+                                                            assignItem.userAvatar
+                                                        ),
+                                                    }}
+                                                    size={20}
+                                                />
+                                            );
+                                        }
+                                    })}
+                                </div>
+                            </div>
                         );
                     })
                 ) : (
@@ -150,14 +169,13 @@ export class PlannerTask extends Widget<ITaskState> {
         );
     }
 
-    private inputLayout(themeString: string): JSX.Element | undefined {
+    private inputLayout(): JSX.Element | undefined {
         return (
             <div
                 ref={this.inputDivRef}
                 className={mergeStyles(
                     "add-task-container",
-                    this.state.inputFocused ? "focused-color" : "non-focused-color",
-                    themeString === "contrast" ? "border-style" : ""
+                    this.state.inputFocused ? "focused-color" : "non-focused-color"
                 )}
             >
                 {this.state.inputFocused ? (
@@ -208,7 +226,6 @@ export class PlannerTask extends Widget<ITaskState> {
     private handleClickOutside(event: any) {
         if (!this.inputDivRef.current?.contains(event.target)) {
             this.setState({
-                tasks: this.state.tasks,
                 inputFocused: false,
                 addBtnOver: this.state.addBtnOver,
                 loading: false,

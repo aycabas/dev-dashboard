@@ -10,5 +10,5 @@ export interface TaskModel {
 export interface TaskAssignedToModel {
     userId: string;
     userDisplayName: string;
-    userAvatarUrl: string;
+    userAvatar: any;
 }
