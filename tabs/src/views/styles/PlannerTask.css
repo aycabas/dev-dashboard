@@ -14,7 +14,7 @@
 }
 
 .add-btn {
-  color: var(--colorBrandForeground1);
+  color: var(--colorPaletteBlueBorderActive);
   margin-left: 0.35rem;
   padding: 0;
 }
@@ -30,7 +30,7 @@
 }
 
 input::placeholder {
-  color: var(--colorBrandForeground1) !important;
+  color: var(--colorPaletteBlueBorderActive) !important;
 }
 
 .focused-color {
