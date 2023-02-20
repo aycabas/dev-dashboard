@@ -118,6 +118,11 @@ export class OpenAI extends Widget<IOpenAIState> {
                     className="btn-copy"
                     appearance="transparent"
                     icon={<Copy24Regular />}
+                    onClick={() =>
+                        navigator.clipboard
+                            .writeText(text!)
+                            .catch(() => this.fallbackCopyTextToClipboard(text!))
+                    }
                 >
                     Copy
                 </Button>
@@ -176,4 +181,23 @@ export class OpenAI extends Widget<IOpenAIState> {
             inputFocused: true,
         });
     };
+
+    fallbackCopyTextToClipboard(text: string) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand("copy");
+        } catch (err) {}
+
+        document.body.removeChild(textArea);
+    }
 }

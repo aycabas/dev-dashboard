@@ -11,7 +11,7 @@
 
 .question-input-layout {
     display: grid;
-    grid-template-columns: 1fr max-content;
+    grid-template-columns: 1fr 40px;
     gap: 0.875rem;
     align-items: center;
 }
