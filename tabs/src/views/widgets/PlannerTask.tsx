@@ -4,7 +4,16 @@ import "../styles/Common.css";
 import React from "react";
 
 import { mergeStyles } from "@fluentui/react";
-import { Avatar, Button, Checkbox, Image, Spinner, Text } from "@fluentui/react-components";
+import {
+    AvatarGroup,
+    AvatarGroupItem,
+    AvatarGroupPopover,
+    Button,
+    Checkbox,
+    Image,
+    Spinner,
+    Text,
+} from "@fluentui/react-components";
 import {
     Add20Filled,
     ArrowRight16Filled,
@@ -90,31 +99,9 @@ export class PlannerTask extends Widget<ITaskState> {
                                         key={`cb-planner-${item.id}`}
                                         shape="circular"
                                         label={item.name}
+                                        className="task-checkbox"
                                     />
-                                    <Button
-                                        key={`bt-planner-${item.id}`}
-                                        icon={<Star24Regular />}
-                                        appearance="transparent"
-                                    />
-                                </div>
-                                <div key={`div-assigned-item-${item.id}`} className="assign-layout">
-                                    {item.assignments?.map((assignItem: TaskAssignedToModel) => {
-                                        if (assignItem.userAvatar !== undefined) {
-                                            return (
-                                                <Avatar
-                                                    key={`avatar-planner-${item.id}-${assignItem.userId}`}
-                                                    className="assign-avatar"
-                                                    name={assignItem.userDisplayName}
-                                                    image={{
-                                                        src: URL.createObjectURL(
-                                                            assignItem.userAvatar
-                                                        ),
-                                                    }}
-                                                    size={20}
-                                                />
-                                            );
-                                        }
-                                    })}
+                                    {this.assignedToLayout(item)}
                                 </div>
                             </div>
                         );
@@ -204,8 +191,41 @@ export class PlannerTask extends Widget<ITaskState> {
         );
     }
 
-    protected stylingWidget(): string | React.CSSProperties {
-        return "";
+    private assignedToLayout(item: TaskModel): JSX.Element | undefined {
+        return (
+            <div className="assigned-layout">
+                {item.assignments !== undefined && item.assignments.length > 0 && (
+                    <AvatarGroup layout="stack">
+                        {item.assignments?.map((assignItem: TaskAssignedToModel) => {
+                            return (
+                                <AvatarGroupItem
+                                    name={assignItem.userDisplayName}
+                                    key={`avatar-${item.id}-${assignItem.userId}`}
+                                    image={{
+                                        src: this.handleAvatar(assignItem.userAvatar),
+                                    }}
+                                />
+                            );
+                        })}
+                        {item.overAssignments !== undefined && item.overAssignments.length > 0 && (
+                            <AvatarGroupPopover>
+                                {item.overAssignments.map((overItem: TaskAssignedToModel) => {
+                                    return (
+                                        <AvatarGroupItem
+                                            name={overItem.userDisplayName}
+                                            key={`avatar-${item.id}-${overItem.userId}`}
+                                            image={{
+                                                src: this.handleAvatar(overItem.userAvatar),
+                                            }}
+                                        />
+                                    );
+                                })}
+                            </AvatarGroupPopover>
+                        )}
+                    </AvatarGroup>
+                )}
+            </div>
+        );
     }
 
     async componentDidMount() {
@@ -265,5 +285,16 @@ export class PlannerTask extends Widget<ITaskState> {
             addBtnOver: false,
             loading: false,
         });
+    };
+
+    private handleAvatar = (blob: any) => {
+        if (blob === undefined) return "";
+        let res;
+        try {
+            res = URL.createObjectURL(blob);
+        } catch (e) {
+            res = "";
+        }
+        return res;
     };
 }

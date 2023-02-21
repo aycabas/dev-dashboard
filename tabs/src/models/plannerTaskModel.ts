@@ -5,6 +5,7 @@ export interface TaskModel {
     priority?: string;
     createdDateTime?: string;
     assignments?: TaskAssignedToModel[];
+    overAssignments?: TaskAssignedToModel[];
 }
 
 export interface TaskAssignedToModel {
