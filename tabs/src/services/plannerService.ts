@@ -13,7 +13,7 @@ export async function getTasks(): Promise<TaskModel[]> {
             "Group.ReadWrite.All",
         ]);
         const resp = await graphClient
-            .api(`/planner/plans/h4vAIIpyo0KPidc_WGpLAWUAEagS/tasks?$top=4`)
+            .api(`/planner/plans/{plan-id}/tasks?$top=4`)
             .get();
         const tasksInfo = resp["value"];
         let tasks: TaskModel[] = [];
@@ -54,13 +54,13 @@ export async function addTask(title: string): Promise<TaskModel[]> {
             "Group.ReadWrite.All",
         ]);
         const plannerTask = {
-            planId: "h4vAIIpyo0KPidc_WGpLAWUAEagS",
-            bucketId: "hGZpkzHbhU-_6u4kyd4RLGUANN-u",
+            planId: "{plan-id}",
+            bucketId: "{bucket-id}",
             title: title,
         };
         await graphClient.api("/planner/tasks").post(plannerTask);
         const tasks = await graphClient
-            .api("/planner/plans/h4vAIIpyo0KPidc_WGpLAWUAEagS/tasks?$top=4")
+            .api("/planner/plans/{plan-id}/tasks?$top=4")
             .get();
         const tasksInfo = tasks["value"];
         let taskResult: TaskModel[] = [];
