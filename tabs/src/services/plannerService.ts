@@ -27,16 +27,20 @@ export async function getTasks(): Promise<TaskModel[]> {
             if (obj["assignments"] !== undefined) {
                 let assignMap: Map<String, object> = new Map(Object.entries(obj["assignments"]));
                 let assignments: TaskAssignedToModel[] = [];
+                let overAssignments: TaskAssignedToModel[] = [];
                 assignMap.forEach(async (value, userId) => {
                     const assignInfo: TaskAssignedToModel = await getUser(userId as string);
-                    assignments.push(assignInfo);
+                    if (assignments.length < 2) {
+                        assignments.push(assignInfo);
+                    } else {
+                        overAssignments.push(assignInfo);
+                    }
                 });
                 taskInfo.assignments = assignments;
+                taskInfo.overAssignments = overAssignments;
             }
             tasks.push(taskInfo);
-            let plannerTaskDetails = await graphClient
-                .api("/planner/tasks/" + taskInfo.id + "/details")
-                .get();
+            await graphClient.api("/planner/tasks/" + taskInfo.id + "/details").get();
         }
         return tasks;
     } catch (e) {
@@ -88,7 +92,7 @@ export function openTaskApp() {
 
 async function getUser(userId: string): Promise<TaskAssignedToModel> {
     let assignedInfo: TaskAssignedToModel = {
-        userId: "",
+        userId: userId,
         userDisplayName: "",
         userAvatar: undefined,
     };
@@ -99,13 +103,9 @@ async function getUser(userId: string): Promise<TaskAssignedToModel> {
             "User.Read.All",
         ]);
         const userInfo = await graphClient.api(`/users/${userId}`).get();
+        assignedInfo.userDisplayName = userInfo["displayName"];
         const photo = await graphClient.api(`/users/${userId}/photo/$value`).get();
-
-        assignedInfo = {
-            userId: userId,
-            userDisplayName: userInfo["displayName"],
-            userAvatar: photo,
-        };
+        assignedInfo.userAvatar = photo;
         return assignedInfo;
     } catch (e) {
         console.log("getUser error: " + e);

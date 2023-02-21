@@ -88,15 +88,18 @@ input::placeholder {
   display: grid;
   grid-template-columns: 1fr max-content;
   gap: 1rem;
-  align-items: center;
-  height: 2.25rem;
+  align-items: start;
+  height: max-content;
+  overflow: hidden;
 }
 
-.assign-layout {
-  padding-left: 2rem;
-  padding-bottom: 0.2rem;
+.task-checkbox {
+  max-width: 10rem !important;
+  align-self: center;
 }
 
-.assign-avatar {
-  margin-left: 0.2rem;
+.assigned-layout {
+  align-items: end;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
