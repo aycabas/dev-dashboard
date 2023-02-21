@@ -1,4 +1,5 @@
 import "../styles/DevOps.css";
+import "../styles/Common.css";
 
 import React from "react";
 
@@ -9,11 +10,11 @@ import {
     MoreHorizontal32Regular,
 } from "@fluentui/react-icons";
 
+import { TeamsFxContext } from "../../internal/context";
 import { DevOpsModel } from "../../models/devOpsModel";
 import { DevOpsWorkItems } from "../../services/devopsService";
 import { Widget } from "../lib/Widget";
 import { widgetStyle } from "../lib/Widget.styles";
-import { TeamsFxContext } from "../../internal/context";
 
 interface IWorkItemState {
     devOpsData?: DevOpsModel[];
@@ -175,7 +176,7 @@ export class DevOps extends Widget<IWorkItemState> {
 
     protected loadingContent(): JSX.Element | undefined {
         return (
-            <div style={{ display: "grid" }}>
+            <div className="loading-layout">
                 <Spinner label="Loading..." labelPosition="below" />
             </div>
         );

@@ -20,6 +20,7 @@ const scope = [
     "Sites.Read.All",
     "Files.ReadWrite.All",
     "Sites.ReadWrite.All",
+    "User.Read.All",
 ];
 
 export default class SampleDashboard extends Dashboard {
@@ -43,14 +44,7 @@ export default class SampleDashboard extends Dashboard {
                         <GithubIssues />
                     </>
                 ) : (
-                    <div
-                        style={{
-                            width: "100vw",
-                            height: "100vh",
-                            display: "grid",
-                            placeItems: "center",
-                        }}
-                    >
+                    <div className="spinner-layout">
                         <Spinner size="huge" />
                     </div>
                 )}
