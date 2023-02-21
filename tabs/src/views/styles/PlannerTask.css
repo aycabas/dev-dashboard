@@ -4,6 +4,7 @@
   overflow-x: hidden;
   min-width: 18rem;
   align-content: start;
+  padding-right: 2px;
 }
 
 .no-task-layout {

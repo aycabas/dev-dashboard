@@ -1,16 +1,10 @@
 import "../styles/PlannerTask.css";
+import "../styles/Common.css";
 
 import React from "react";
 
 import { mergeStyles } from "@fluentui/react";
-import {
-    Avatar,
-    Button,
-    Checkbox,
-    Image,
-    Spinner,
-    Text,
-} from "@fluentui/react-components";
+import { Avatar, Button, Checkbox, Image, Spinner, Text } from "@fluentui/react-components";
 import {
     Add20Filled,
     ArrowRight16Filled,
@@ -87,7 +81,7 @@ export class PlannerTask extends Widget<ITaskState> {
                 {hasTask ? (
                     this.state.tasks?.map((item: TaskModel) => {
                         return (
-                            <div className="div-task-item">
+                            <div key={`div-planner-item-${item.id}`} className="div-task-item">
                                 <div
                                     key={`div-planner-${item.id}`}
                                     className="existing-task-layout"
@@ -103,7 +97,7 @@ export class PlannerTask extends Widget<ITaskState> {
                                         appearance="transparent"
                                     />
                                 </div>
-                                <div className="assign-layout">
+                                <div key={`div-assigned-item-${item.id}`} className="assign-layout">
                                     {item.assignments?.map((assignItem: TaskAssignedToModel) => {
                                         if (assignItem.userAvatar !== undefined) {
                                             return (
@@ -163,7 +157,7 @@ export class PlannerTask extends Widget<ITaskState> {
 
     protected loadingContent(): JSX.Element | undefined {
         return (
-            <div style={{ display: "grid" }}>
+            <div className="loading-layout">
                 <Spinner label="Loading..." labelPosition="below" />
             </div>
         );

@@ -6,7 +6,7 @@
     display: grid;
     grid-template-rows: max-content 1fr;
     gap: 1.25rem;
-    overflow-x: auto;
+    overflow-x: hidden !important;
 }
 
 .question-input-layout {
@@ -43,7 +43,7 @@
     gap: 1rem;
     align-content: start;
     height: 100%;
-    overflow-x: auto;
+    overflow-x: hidden !important;
     padding-right: 2px;
 }
 
@@ -73,19 +73,12 @@ pre {
     background-color: transparent !important;
 }
 
-.answer-content {
-    width: 100%;
-    height: max-content;
-    border-radius: 4px;
-    background-color: var(--colorNeutralBackground3);
-}
-
 ::-webkit-scrollbar-thumb {
-    width: 8px !important;
-    background-color: var(--colorNeutralStroke1) !important;
-    border-radius: 20px !important;
+    width: 8px;
+    background-color: var(--colorNeutralStroke1);
+    border-radius: 20px;
 }
 
 ::-webkit-scrollbar {
-    width: 8px !important;
+    width: 8px;
 }

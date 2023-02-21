@@ -13,7 +13,7 @@ body {
   overflow-x: hidden;
 }
 
-::-webkit-scrollbar {
-  width: 0px;
+body::-webkit-scrollbar {
+  width: 0px !important;
   background: transparent; /* make scrollbar transparent */
 }

@@ -97,8 +97,12 @@ export class OpenAI extends Widget<IOpenAIState> {
                 </div>
                 {hasAnswer ? (
                     <div className="answer-layout">
-                        {this.state.answer?.map((item: openAIModel) => {
-                            return item.isCode ? this.codeBlock(item.text) : <pre>{item.text}</pre>;
+                        {this.state.answer?.map((item: openAIModel, index: number) => {
+                            return item.isCode ? (
+                                this.codeBlock(index, item.text)
+                            ) : (
+                                <pre key={`pre-${index}`}>{item.text}</pre>
+                            );
                         })}
                     </div>
                 ) : (
@@ -110,11 +114,11 @@ export class OpenAI extends Widget<IOpenAIState> {
         );
     }
 
-    private codeBlock = (text?: string): JSX.Element => {
+    private codeBlock = (index: number, text?: string): JSX.Element => {
         return (
-            <div className="code-block">
+            <div key={`div-code-${index}`} className="code-block">
                 <Button
-                    key="btn-copy"
+                    key={`btn-copy-${index}`}
                     className="btn-copy"
                     appearance="transparent"
                     icon={<Copy24Regular />}
@@ -126,7 +130,7 @@ export class OpenAI extends Widget<IOpenAIState> {
                 >
                     Copy
                 </Button>
-                <SyntaxHighlighter>{text!}</SyntaxHighlighter>
+                <SyntaxHighlighter key={`sh-${index}`}>{text!}</SyntaxHighlighter>
             </div>
         );
     };
