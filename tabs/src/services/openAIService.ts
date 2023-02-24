@@ -1,24 +1,30 @@
 import { openAIModel } from "../models/openAIModel";
-import { Configuration, OpenAIApi } from "openai";
 
 export async function askOpenAI(prompt: string): Promise<openAIModel[]> {
-    const configuration = new Configuration({
-        //Insert Open AI API Key
-        apiKey: "OPEN-API-KEY",
 
-    });
-    const openai = new OpenAIApi(configuration);
+    const api_key = "REPLACE_WITH_YOUR_API_KEY_HERE"
+    const base_url = "https://<REPLACE_WITH_ENDPOINT_NAME_HERE>.openai.azure.com"
+    const deployment_name = "code-davinci-002"
+    const url = base_url + "/openai/deployments/" + deployment_name + "/completions?api-version=2022-12-01";
+    const payload = {
+        "prompt": prompt,
+        "max_tokens": 300,
+        "temperature": 0,
+        "top_p": 1,
+    }
 
     try {
-        const response = await openai.createCompletion({
-            model: "code-davinci-002",
-            prompt: prompt,
-            max_tokens: 300,
-            temperature: 0,
-            top_p: 1,
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "api-key": api_key,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
+        const res = await response.json();
         const result: openAIModel[] = [];
-        for (const obj of response.data.choices) {
+        for (const obj of res.choices) {
             result.push(...splitText(obj["text"]!));
         }
 
