@@ -102,8 +102,8 @@ After completing the integration of the features, you may start debugging the pr
 
 ## Edit the Manifest
 
-You can find the Teams manifest in `templates/appPackage` folder. The templates contains:
-* `manifest.template.json`: Manifest file for Teams app running locally and remotely.
+You can find the Teams manifest in `appPackage` folder. The templates contains:
+* `manifest.json`: Manifest file for Teams app running locally and remotely.
 
 Both file contains template arguments with `{...}` statements which will be replaced at build time. You may add any extra properties or permissions you require to this file. See the [schema reference](https://docs.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema) for more.
 
@@ -136,9 +136,10 @@ Once deployed, you may want to distribute your application to your organization'
 
 ### Code Structure
 
-- You can check app configuration and environment information in: [.fx](.fx)
-- You will find frontend code in: [tabs/src/views/widgets](tabs/src/views/widgets)
-- You will find backend code in: [tabs/src/services](tabs/src/services)
+- You can check app configuration in `teamsapp.*.yml` files
+- You can check app environment information in: [env](env)
+- You will find frontend code in: [src/views/widgets](src/views/widgets)
+- You will find backend code in: [src/services](src/services)
 
 ## Code of Conduct
 

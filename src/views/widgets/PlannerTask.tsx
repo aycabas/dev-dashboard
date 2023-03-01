@@ -19,7 +19,6 @@ import {
     ArrowRight16Filled,
     Circle20Regular,
     MoreHorizontal32Regular,
-    Star24Regular,
 } from "@fluentui/react-icons";
 
 import { TeamsFxContext } from "../../internal/context";

@@ -2,7 +2,7 @@
     "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.14/MicrosoftTeams.schema.json",
     "manifestVersion": "1.14",
     "version": "1.0.0",
-    "id": "{{state.fx-resource-appstudio.teamsAppId}}",
+    "id": "${{TEAMS_APP_ID}}",
     "packageName": "com.microsoft.teams.extension",
     "developer": {
         "name": "Teams App, Inc.",
@@ -11,23 +11,23 @@
         "termsOfUseUrl": "https://www.example.com/privacy"
     },
     "icons": {
-        "color": "resources/color.png",
-        "outline": "resources/outline.png"
+        "color": "${{COLOR_ICON}}",
+        "outline": "${{OUTLINE_ICON}}"
     },
     "name": {
-        "short": "{{config.manifest.appName.short}}",
-        "full": "{{config.manifest.appName.full}}"
+        "short": "${{APP_NAME_SHORT}}",
+        "full": "${{APP_NAME_FULL}}"
     },
     "description": {
-        "short": "{{config.manifest.description.short}}",
-        "full": "{{config.manifest.description.full}}"
+        "short": "${{DESCRIPTION_SHORT}}",
+        "full": "${{DESCRIPTION_FULL}}"
     },
     "accentColor": "#FFFFFF",
     "bots": [],
     "composeExtensions": [],
     "configurableTabs": [
         {
-            "configurationUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/config",
+            "configurationUrl": "${{TAB_ENDPOINT}}/index.html#/config",
             "canUpdateConfiguration": true,
             "scopes": [
                 "team",
@@ -39,8 +39,8 @@
         {
             "entityId": "index0",
             "name": "Dashboard",
-            "contentUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/tab",
-            "websiteUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/tab",
+            "contentUrl": "${{TAB_ENDPOINT}}/index.html#/tab",
+            "websiteUrl": "${{TAB_ENDPOINT}}/index.html#/tab",
             "scopes": [
                 "personal"
             ]
@@ -51,10 +51,10 @@
         "messageTeamMembers"
     ],
     "validDomains": [
-        "{{state.fx-resource-frontend-hosting.domain}}"
+        "${{TAB_DOMAIN}}"
     ],
     "webApplicationInfo": {
-        "id": "{{state.fx-resource-aad-app-for-teams.clientId}}",
-        "resource": "{{{state.fx-resource-aad-app-for-teams.applicationIdUris}}}"
+        "id": "${{AAD_APP_CLIENT_ID}}",
+        "resource": "api://${{TAB_DOMAIN}}/${{AAD_APP_CLIENT_ID}}"
     }
 }
