@@ -97,8 +97,12 @@ export class OpenAI extends Widget<IOpenAIState> {
                 </div>
                 {hasAnswer ? (
                     <div className="answer-layout">
-                        {this.state.answer?.map((item: openAIModel) => {
-                            return item.isCode ? this.codeBlock(item.text) : <pre>{item.text}</pre>;
+                        {this.state.answer?.map((item: openAIModel, index: number) => {
+                            return item.isCode ? (
+                                this.codeBlock(index, item.text)
+                            ) : (
+                                <pre key={`pre-${index}`}>{item.text}</pre>
+                            );
                         })}
                     </div>
                 ) : (
@@ -110,18 +114,23 @@ export class OpenAI extends Widget<IOpenAIState> {
         );
     }
 
-    private codeBlock = (text?: string): JSX.Element => {
+    private codeBlock = (index: number, text?: string): JSX.Element => {
         return (
-            <div className="code-block">
+            <div key={`div-code-${index}`} className="code-block">
                 <Button
-                    key="btn-copy"
+                    key={`btn-copy-${index}`}
                     className="btn-copy"
                     appearance="transparent"
                     icon={<Copy24Regular />}
+                    onClick={() =>
+                        navigator.clipboard
+                            .writeText(text!)
+                            .catch(() => this.fallbackCopyTextToClipboard(text!))
+                    }
                 >
                     Copy
                 </Button>
-                <SyntaxHighlighter>{text!}</SyntaxHighlighter>
+                <SyntaxHighlighter key={`sh-${index}`}>{text!}</SyntaxHighlighter>
             </div>
         );
     };
@@ -176,4 +185,23 @@ export class OpenAI extends Widget<IOpenAIState> {
             inputFocused: true,
         });
     };
+
+    fallbackCopyTextToClipboard(text: string) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand("copy");
+        } catch (err) {}
+
+        document.body.removeChild(textArea);
+    }
 }

@@ -4,6 +4,10 @@
     gap: 1rem;
 }
 
+.loading-layout {
+    display: grid;
+}
+
 .empty-img {
     height: 155px;
     justify-self: center;

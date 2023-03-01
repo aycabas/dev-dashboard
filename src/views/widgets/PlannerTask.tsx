@@ -1,9 +1,19 @@
 import "../styles/PlannerTask.css";
+import "../styles/Common.css";
 
 import React from "react";
 
 import { mergeStyles } from "@fluentui/react";
-import { Button, Checkbox, Image, Spinner, Text } from "@fluentui/react-components";
+import {
+    AvatarGroup,
+    AvatarGroupItem,
+    AvatarGroupPopover,
+    Button,
+    Checkbox,
+    Image,
+    Spinner,
+    Text,
+} from "@fluentui/react-components";
 import {
     Add20Filled,
     ArrowRight16Filled,
@@ -13,7 +23,7 @@ import {
 } from "@fluentui/react-icons";
 
 import { TeamsFxContext } from "../../internal/context";
-import { TaskModel } from "../../models/plannerTaskModel";
+import { TaskAssignedToModel, TaskModel } from "../../models/plannerTaskModel";
 import { addTask, getTasks } from "../../services/plannerService";
 import { EmptyThemeImg } from "../components/EmptyThemeImg";
 import { Widget } from "../lib/Widget";
@@ -76,34 +86,24 @@ export class PlannerTask extends Widget<ITaskState> {
         const hasTask = this.state.tasks?.length !== 0;
         return (
             <div className={hasTask ? "has-task-layout" : "no-task-layout"}>
-                <TeamsFxContext.Consumer>
-                    {({ themeString }) => this.inputLayout(themeString)}
-                </TeamsFxContext.Consumer>
+                {this.inputLayout()}
                 {hasTask ? (
                     this.state.tasks?.map((item: TaskModel) => {
                         return (
-                            <TeamsFxContext.Consumer key={`consumer-planner-${item.id}`}>
-                                {({ themeString }) => (
-                                    <div
-                                        key={`div-planner-${item.id}`}
-                                        className={mergeStyles(
-                                            "existing-task-layout",
-                                            themeString === "contrast" ? "border-style" : ""
-                                        )}
-                                    >
-                                        <Checkbox
-                                            key={`cb-planner-${item.id}`}
-                                            shape="circular"
-                                            label={item.name}
-                                        />
-                                        <Button
-                                            key={`bt-planner-${item.id}`}
-                                            icon={<Star24Regular />}
-                                            appearance="transparent"
-                                        />
-                                    </div>
-                                )}
-                            </TeamsFxContext.Consumer>
+                            <div key={`div-planner-item-${item.id}`} className="div-task-item">
+                                <div
+                                    key={`div-planner-${item.id}`}
+                                    className="existing-task-layout"
+                                >
+                                    <Checkbox
+                                        key={`cb-planner-${item.id}`}
+                                        shape="circular"
+                                        label={item.name}
+                                        className="task-checkbox"
+                                    />
+                                    {this.assignedToLayout(item)}
+                                </div>
+                            </div>
                         );
                     })
                 ) : (
@@ -144,20 +144,19 @@ export class PlannerTask extends Widget<ITaskState> {
 
     protected loadingContent(): JSX.Element | undefined {
         return (
-            <div style={{ display: "grid" }}>
+            <div className="loading-layout">
                 <Spinner label="Loading..." labelPosition="below" />
             </div>
         );
     }
 
-    private inputLayout(themeString: string): JSX.Element | undefined {
+    private inputLayout(): JSX.Element | undefined {
         return (
             <div
                 ref={this.inputDivRef}
                 className={mergeStyles(
                     "add-task-container",
-                    this.state.inputFocused ? "focused-color" : "non-focused-color",
-                    themeString === "contrast" ? "border-style" : ""
+                    this.state.inputFocused ? "focused-color" : "non-focused-color"
                 )}
             >
                 {this.state.inputFocused ? (
@@ -192,8 +191,41 @@ export class PlannerTask extends Widget<ITaskState> {
         );
     }
 
-    protected stylingWidget(): string | React.CSSProperties {
-        return "";
+    private assignedToLayout(item: TaskModel): JSX.Element | undefined {
+        return (
+            <div className="assigned-layout">
+                {item.assignments !== undefined && item.assignments.length > 0 && (
+                    <AvatarGroup layout="stack">
+                        {item.assignments?.map((assignItem: TaskAssignedToModel) => {
+                            return (
+                                <AvatarGroupItem
+                                    name={assignItem.userDisplayName}
+                                    key={`avatar-${item.id}-${assignItem.userId}`}
+                                    image={{
+                                        src: this.handleAvatar(assignItem.userAvatar),
+                                    }}
+                                />
+                            );
+                        })}
+                        {item.overAssignments !== undefined && item.overAssignments.length > 0 && (
+                            <AvatarGroupPopover>
+                                {item.overAssignments.map((overItem: TaskAssignedToModel) => {
+                                    return (
+                                        <AvatarGroupItem
+                                            name={overItem.userDisplayName}
+                                            key={`avatar-${item.id}-${overItem.userId}`}
+                                            image={{
+                                                src: this.handleAvatar(overItem.userAvatar),
+                                            }}
+                                        />
+                                    );
+                                })}
+                            </AvatarGroupPopover>
+                        )}
+                    </AvatarGroup>
+                )}
+            </div>
+        );
     }
 
     async componentDidMount() {
@@ -208,7 +240,6 @@ export class PlannerTask extends Widget<ITaskState> {
     private handleClickOutside(event: any) {
         if (!this.inputDivRef.current?.contains(event.target)) {
             this.setState({
-                tasks: this.state.tasks,
                 inputFocused: false,
                 addBtnOver: this.state.addBtnOver,
                 loading: false,
@@ -254,5 +285,16 @@ export class PlannerTask extends Widget<ITaskState> {
             addBtnOver: false,
             loading: false,
         });
+    };
+
+    private handleAvatar = (blob: any) => {
+        if (blob === undefined) return "";
+        let res;
+        try {
+            res = URL.createObjectURL(blob);
+        } catch (e) {
+            res = "";
+        }
+        return res;
     };
 }
