@@ -57,9 +57,9 @@ This widget displays DevOps Work Items including the title, type, assigned to an
  ![DevOps project](images/devops.png)
 1. In Azure DevOps, select **User settings** and then select **Personal access token**. Select **+ New token** to create a new personal access token, give a name to your token, select **Read** permission for Work Items and **Create**.
  ![DevOps project](images/devops-personal-token.png)
-1. Open **devopsService.ts** file inside `tabs > src > services` folder: 
-    * Replace **{OrganizationName}** and **{ProjectName}** with your `organization name` and `project name` inside `https://dev.azure.com/{OrganizationName}/{ProjectName}/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0`.
-    * Replace `DEVOPS-PERSONAL-ACCESS-TOKEN` with your personal access token.
+1. Open `./src/configs.ts` file: 
+    * Add the values of **ORGANIZATION_NAME** and **PROJECT_NAME** with your `organization name` and `project name`.
+    * Add the value of **DEVOPS_PERSONAL_ACCESS_TOKEN** with your personal access token.
 ---
 
 | **GitHub Issues** |
@@ -70,9 +70,9 @@ This widget displays GitHub issues including the title, status and the url of th
 **To integrate GitHub issues in the dashboard, follow the instructions:**
 1. Login to [GitHub](https://github.com/) and select **Settings > Developer settings > Personal access token**. Select **Generate new token** to create new personal access token. Give a name to your token, select the repositories you want to access. Under `Repository permissions`, give **Read and write** access to **Issues**.
  ![DevOps project](images/github.png)
-1. Open **githubService.ts** file inside `tabs > src > services` folder, inside the both of **GetIssues** and **CreateIssue** functions:
-    * Replace `GITHUB-PERSONAL-ACCESS-TOKEN` with your personal access token.
-    * Replace `REPOSITORY-OWNER-NAME` with your GitHub username and `REPOSITORY-NAME` with your repository name.
+1. Open `./src/configs.ts` file:
+    * Add the value of **GITHUB_PERSONAL_ACCESS_TOKEN** with your personal access token.
+    * Add the values of **REPOSITORY_OWNER_NAME** and **REPOSITORY_NAME** with your GitHub username and your repository name.
 ---
 
 | **Planner Tasks** |
@@ -83,7 +83,9 @@ This widget displays Planner tasks including the title of the task. This widget 
 **To integrate Planner tasks in the dashboard, follow the instructions:**
 1. Login to [Microsoft Planner](https://tasks.office.com/) and select the plan you want to integrate, copy the **Plan Id** from the URL:
  ![Planner](images/planner.png)
-1. Open **plannerService.ts** file inside `tabs > src > services` folder, replace `{plan-id}` inside `/planner/plans/{plan-id}/tasks?$top=4` with your plan id.
+1. Open `./src/configs.ts` file: 
+    * Add the value of **PLAN_ID** with your plan id.
+    * Add the value of **BUCKET_ID** with 
 
 | **OpenAI Code Helper** |
 | --- |
@@ -92,7 +94,9 @@ This widget displays OpenAI Code Helper that responds user's code related questi
 
 **To integrate OpenAI Code Helper in the dashboard, follow the instructions**
 1. Login to [OpenAI API Keys](https://platform.openai.com/account/api-keys) to create a new API key. Select **Create new secret key** and copy the API key.
-1. Open **openAIService.ts** file inside `tabs > src > services` folder, replace `OPEN-API-KEY` with your OpenAI API Key.
+1. Open `./src/configs.ts` file:
+    * Add the value of **OPENAI_API_KEY** with your OpenAI API Key.
+    * Add the value of **OPENAI_ENDPOINT_NAME** with
 ---
 
 After completing the integration of the features, you may start debugging the project by hitting the `F5` key in Visual Studio Code.**
