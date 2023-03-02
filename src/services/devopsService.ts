@@ -1,14 +1,19 @@
 import { DevOpsModel } from "../models/devOpsModel";
+import * as configs from "../configs";
 export async function DevOpsWorkItems(): Promise<DevOpsModel[]> {
     try {
         let devopsItems: DevOpsModel[] = [];
         const req = await fetch(
-            "https://dev.azure.com/{OrganizationName}/{ProjectName}/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0",
+            "https://dev.azure.com/" +
+            configs.ORGANIZATION_NAME +
+            "/" +
+            configs.PROJECT_NAME +
+            "/_apis/wit/workitems?ids=1,2,3,4,5&api-version=7.0",
             {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json; charset=utf-8;",
-                    Authorization: "Basic " + btoa("Basic" + ":" + "DEVOPS-PERSONAL-ACCESS-TOKEN"),
+                    Authorization: "Basic " + btoa("Basic" + ":" + configs.DEVOPS_PERSONAL_ACCESS_TOKEN),
                 },
             }
         )

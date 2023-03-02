@@ -1,11 +1,12 @@
 import { githubIssuesModel } from "../models/githubIssuesModel";
 import { Octokit } from "octokit";
+import * as configs from "../configs";
 
 export async function getIssues(): Promise<githubIssuesModel[]> {
 
     const octokit = new Octokit({
         //github personal access token
-        auth: 'GITHUB-PERSONAL-ACCESS-TOKEN'
+        auth: configs.GITHUB_PERSONAL_ACCESS_TOKEN
 
     })
 
@@ -35,7 +36,7 @@ export async function getIssues(): Promise<githubIssuesModel[]> {
 export async function createIssue(title: string): Promise<githubIssuesModel[]> {
     const octokit = new Octokit({
         //github personal access token
-        auth: 'GITHUB-PERSONAL-ACCESS-TOKEN'
+        auth: configs.GITHUB_PERSONAL_ACCESS_TOKEN
 
     })
 
@@ -43,8 +44,8 @@ export async function createIssue(title: string): Promise<githubIssuesModel[]> {
 
         await octokit.request('POST /repos/{owner}/{repo}/issues', {
             //repository name and owner name
-            owner: 'REPOSITORY-OWNER-NAME',
-            repo: 'REPOSITORY-NAME',
+            owner: configs.REPOSITORY_OWNER_NAME,
+            repo: configs.REPOSITORY_NAME,
             title: title
         })
 

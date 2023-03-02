@@ -1,10 +1,11 @@
 import { openAIModel } from "../models/openAIModel";
+import * as configs from "../configs";
 
 export async function askOpenAI(prompt: string): Promise<openAIModel[]> {
 
-    const api_key = "REPLACE_WITH_YOUR_API_KEY_HERE"
-    const base_url = "https://<REPLACE_WITH_ENDPOINT_NAME_HERE>.openai.azure.com"
-    const deployment_name = "code-davinci-002"
+    const api_key = configs.OPENAI_API_KEY;
+    const base_url = "https://" + configs.OPENAI_ENDPOINT_NAME + ".openai.azure.com";
+    const deployment_name = "code-davinci-002";
     const url = base_url + "/openai/deployments/" + deployment_name + "/completions?api-version=2022-12-01";
     const payload = {
         "prompt": prompt,

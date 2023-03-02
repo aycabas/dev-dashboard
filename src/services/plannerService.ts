@@ -3,6 +3,7 @@ import { createMicrosoftGraphClientWithCredential, TeamsUserCredential } from "@
 
 import { TeamsUserCredentialContext } from "../internal/singletonContext";
 import { TaskAssignedToModel, TaskModel } from "../models/plannerTaskModel";
+import * as configs from "../configs";
 
 export async function getTasks(): Promise<TaskModel[]> {
     let credential: TeamsUserCredential;
@@ -13,7 +14,7 @@ export async function getTasks(): Promise<TaskModel[]> {
             "Group.ReadWrite.All",
         ]);
         const resp = await graphClient
-            .api(`/planner/plans/{plan-id}/tasks?$top=4`)
+            .api(`/planner/plans/${configs.PLAN_ID}/tasks?$top=4`)
             .get();
         const tasksInfo = resp["value"];
         let tasks: TaskModel[] = [];
@@ -58,13 +59,13 @@ export async function addTask(title: string): Promise<TaskModel[]> {
             "Group.ReadWrite.All",
         ]);
         const plannerTask = {
-            planId: "{plan-id}",
-            bucketId: "{bucket-id}",
+            planId: configs.PLAN_ID,
+            bucketId: configs.BUCKET_ID,
             title: title,
         };
         await graphClient.api("/planner/tasks").post(plannerTask);
         const tasks = await graphClient
-            .api("/planner/plans/{plan-id}/tasks?$top=4")
+            .api("/planner/plans/" + configs.PLAN_ID + "/tasks?$top=4")
             .get();
         const tasksInfo = tasks["value"];
         let taskResult: TaskModel[] = [];
@@ -81,13 +82,6 @@ export async function addTask(title: string): Promise<TaskModel[]> {
     } catch (e) {
         throw e;
     }
-}
-
-export function openTaskApp() {
-    window.open(
-        "https://teams.microsoft.com/l/app/0d5c91ee-5be2-4b79-81ed-23e6c4580427?source=app-details-dialog",
-        "_blank"
-    );
 }
 
 async function getUser(userId: string): Promise<TaskAssignedToModel> {
