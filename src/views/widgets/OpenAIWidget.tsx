@@ -49,7 +49,7 @@ export class OpenAI extends Widget<IOpenAIState> {
             <div className={widgetStyle.headerContent}>
                 <CodeTextEdit20Filled />
                 <Text key="text-task-title" className={widgetStyle.headerText}>
-                    Open AI Code Helper
+                    Code Helper
                 </Text>
                 <Button
                     key="bt-task-more"
