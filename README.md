@@ -7,7 +7,7 @@
 > Important: Please be advised that access tokens are stored in sessionStorage for you by default. This can make it possible for malicious code in your app (or code pasted into a console on your page) to access APIs at the same privilege level as your client application. Please ensure you only request the minimum necessary scopes from your client application, and perform any sensitive operations from server side code that your client has to authenticate with.
 Microsoft Teams supports the ability to run web-based UI inside "custom tabs" that users can install either for just themselves (personal tabs) or within a team or group chat context.
 
-Developer Team Dashboard shows you how to build a tab with OpenAI Code Helper, Azure DevOps work items, GitHub issues and Planner tasks to accelerate developer team collaboration and productivity.
+Developer Team Dashboard shows you how to build a tab with Code Helper, Azure DevOps work items, GitHub issues and Planner tasks to accelerate developer team collaboration and productivity.
 
 https://user-images.githubusercontent.com/36196437/221160354-83da2a5a-ebae-462c-aaad-e61b64405958.mp4
 
@@ -18,7 +18,7 @@ https://user-images.githubusercontent.com/36196437/221160354-83da2a5a-ebae-462c-
     * [Azure DevOps Work Items](#azure-devops-work-items)
     * [GitHub Issues](#github-issues)
     * [Planner Tasks](#planner-tasks)
-    * [OpenAI Code Helper](#openai-code-helper)
+    * [Code Helper with Azure OpenAI Service](#code-helper-with-azure-openai-service)
 4. [Edit the Manifest](#edit-the-manifest)
 5. [Deploy to Azure](#deploy-to-azure)
 6. [Package](#package)
@@ -87,16 +87,16 @@ This widget displays Planner tasks including the title of the task. This widget 
     * Add the value of **PLAN_ID** with your plan id.
     * Add the value of **BUCKET_ID** with 
 
-| **OpenAI Code Helper** |
+| **Code Helper with Azure OpenAI Service** |
 | --- |
-This widget displays OpenAI Code Helper that responds user's code related questions with a code snippet:
+This widget displays a Code Helper that responds user's code related questions with a code snippet:
 ![code-helper-widget](https://user-images.githubusercontent.com/36196437/221166718-7d73b4a2-4f09-4dca-aecc-68538f836839.png)
 
-**To integrate OpenAI Code Helper in the dashboard, follow the instructions**
-1. Login to [OpenAI API Keys](https://platform.openai.com/account/api-keys) to create a new API key. Select **Create new secret key** and copy the API key.
+**To integrate Code Helper in the dashboard, follow the instructions**
+1. Login to [Azure Portal](https://portal.azure.com) to create a new API key. Create new **Azure OpenAI Service**, and then go to your Azure OpenAI Service resource. Select **Keys and Endpoints**, copy the **key** and the **endpoint**. 
 1. Open `./src/configs.ts` file:
-    * Add the value of **OPENAI_API_KEY** with your OpenAI API Key.
-    * Add the value of **OPENAI_ENDPOINT_NAME** with
+    * Add the value of **OPENAI_API_KEY** with your Azure OpenAI API Key.
+    * Add the value of **OPENAI_ENDPOINT_NAME** with your Azure OpenAI endpoint name.
 ---
 
 After completing the integration of the features, you may start debugging the project by hitting the `F5` key in Visual Studio Code.**
