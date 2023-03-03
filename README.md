@@ -37,7 +37,7 @@ https://user-images.githubusercontent.com/36196437/221160354-83da2a5a-ebae-462c-
 - How to use TeamsFx to embed a canvas containing multiple cards that provide an overview of data or content in your tab app.
 - How to use TeamsFx to build frontend hosting on Azure for your tab app.
 - How to use TeamsFx to build backend hosting on Azure for your tab app.
-- How to use DevOps, GitHub, OpenAI and Microsoft Graph APIs in TeamsFx to get access to variety of data.
+- How to use DevOps, GitHub, Azure OpenAI and Microsoft Graph APIs in TeamsFx to get access to variety of data.
 
 ## Try the Sample with Visual Studio Code Extension
 Here are the instructions to run the sample in **Visual Studio Code**. You can also try to run the app using TeamsFx CLI tool, refer to [Try the Sample with TeamsFx CLI](cli.md)
