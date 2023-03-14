@@ -11,6 +11,7 @@ import { DevOps } from "../widgets/DevOpsWidget";
 import { GithubIssues } from "../widgets/GitHubWidget";
 import { OpenAI } from "../widgets/OpenAIWidget";
 import { PlannerTask } from "../widgets/PlannerTask";
+import { OfficeOasis } from "../widgets/OfficeOasisWidget";
 
 const scope = [
     "Tasks.ReadWrite",
@@ -32,14 +33,15 @@ export default class SampleDashboard extends Dashboard {
         return "11fr 5fr";
     }
 
-    protected dashboardLayout(): undefined | JSX.Element {
+    protected dashboardLayout(): undefined | JSX.Element {       
         return (
             <>
                 {this.state.showLogin === false ? (
                     <>
                         <Image className="img-style" src="bg.png" />
                         <DevOps />
-                        <PlannerTask />
+                        <OfficeOasis/>
+                        <PlannerTask />                        
                         <OpenAI />
                         <GithubIssues />
                     </>
